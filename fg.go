@@ -6,7 +6,7 @@ import (
     "io/ioutil"
     "log"
     "os"
-    "path"
+    "path/filepath"
 )
 
 type Options struct {
@@ -58,7 +58,7 @@ func groupFile(file os.FileInfo, baseDirPath string, groupBy string) {
     // Group key will be subdirectory (of base dir) name
     grpKey := getGroupKeyFromFileObject(file, groupBy)
 
-    targetDirPath := path.Join(baseDirPath, grpKey)
+    targetDirPath := filepath.Join(baseDirPath, grpKey)
 
     // Directory may not exist
     if _, err := os.Stat(targetDirPath); os.IsNotExist(err) {
@@ -68,8 +68,8 @@ func groupFile(file os.FileInfo, baseDirPath string, groupBy string) {
         }
     }
 
-    sourcePath := path.Join(baseDirPath, file.Name())
-    targetPath := path.Join(targetDirPath, file.Name())
+    sourcePath := filepath.Join(baseDirPath, file.Name())
+    targetPath := filepath.Join(targetDirPath, file.Name())
 
     if err := os.Rename(sourcePath, targetPath); err != nil {
         log.Printf("%v", err)
