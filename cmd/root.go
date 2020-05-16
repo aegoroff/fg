@@ -34,7 +34,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&sourcesPath, pathParamName, "p", "", "REQUIRED. Directory path whose files will be grouped by folders.")
 	rootCmd.PersistentFlags().StringVarP(&include, "include", "i", "", "Only files whose names match the pattern specified by the option are grouped.")
 	rootCmd.PersistentFlags().StringVarP(&exclude, "exclude", "e", "", "Exclude files whose names match pattern specified by the option from grouping.")
-	rootCmd.MarkFlagRequired(pathParamName)
+	rootCmd.MarkPersistentFlagRequired(pathParamName)
 }
 
 // Execute starts package running
