@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 const fgTestFileName = "file.txt"
@@ -125,92 +127,73 @@ func TestFilterFile_BothPatternsSetMatchNoneOfThem_ReturnTrue(t *testing.T) {
 	ass.Truef(result, "File name %s should be filtered by include: %s but it wasn't", fgTestFileName, include)
 }
 
-func TestFg_GroupByExt_FilesMoved(t *testing.T) {
-	// Arrange
-	ass := assert.New(t)
-	const path = "dir"
-	const content = "src"
-	const f1 = "/f1.txt"
-	const f2 = "/f2.txt"
-	const f3 = "/f3.xml"
-	const f4 = "/f4.html"
+func TestFg_GroupingTests_FilesMoved(t *testing.T) {
+	y, m, d := time.Now().Date()
 
-	//ass := assert.New(t)
-	memfs := afero.NewMemMapFs()
-	memfs.MkdirAll(path, 0755)
-	afero.WriteFile(memfs, path+f1, []byte(content), 0644)
-	afero.WriteFile(memfs, path+f2, []byte(content), 0644)
-	afero.WriteFile(memfs, path+f3, []byte(content), 0644)
-	afero.WriteFile(memfs, path+f4, []byte(content), 0644)
+	today := "/" + fmt.Sprintf("%d-%02d-%02d", y, m, d)
+	month := "/" + fmt.Sprintf("%d-%02d", y, m)
+	year := "/" + fmt.Sprintf("%d", y)
 
-	opt := Options{
-		Path:    path,
-		GroupBy: "ext",
+	var tests = []struct {
+		option string
+		dir    string
+		file1  string
+		file2  string
+		file3  string
+		file4  string
+		sub1   string
+		sub2   string
+		sub3   string
+		sub4   string
+	}{
+		{"d", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", today, today, today, today},
+		{"day", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", today, today, today, today},
+		{"m", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", month, month, month, month},
+		{"month", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", month, month, month, month},
+		{"y", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", year, year, year, year},
+		{"year", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", year, year, year, year},
+		{"ext", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", "/txt", "/txt", "/xml", "/html"},
+		{"ext", "dir", "/f1", "/f2.txt", "/f3.xml", "/f4.html", "/no extension", "/txt", "/xml", "/html"},
+		{"l3", "dir", "/file1.txt", "/file2.txt", "/dile.xml", "/eile.html", "/fil", "/fil", "/dil", "/eil"},
 	}
 
-	// Act
-	fg(opt, memfs)
+	for _, test := range tests {
+		// Arrange
+		ass := assert.New(t)
+		const content = "src"
 
-	// Assert
-	_, err := memfs.Stat(path + "/txt" + f1)
-	ass.NoError(err)
-	_, err = memfs.Stat(path + "/txt" + f2)
-	ass.NoError(err)
-	_, err = memfs.Stat(path + "/xml" + f3)
-	ass.NoError(err)
-	_, err = memfs.Stat(path + "/html" + f4)
-	ass.NoError(err)
-	_, err = memfs.Stat(path + f1)
-	ass.Error(err)
-	_, err = memfs.Stat(path + f2)
-	ass.Error(err)
-	_, err = memfs.Stat(path + f3)
-	ass.Error(err)
-	_, err = memfs.Stat(path + f4)
-	ass.Error(err)
-}
+		//ass := assert.New(t)
+		memfs := afero.NewMemMapFs()
+		memfs.MkdirAll(test.dir, 0755)
+		afero.WriteFile(memfs, test.dir+test.file1, []byte(content), 0644)
+		afero.WriteFile(memfs, test.dir+test.file2, []byte(content), 0644)
+		afero.WriteFile(memfs, test.dir+test.file3, []byte(content), 0644)
+		afero.WriteFile(memfs, test.dir+test.file4, []byte(content), 0644)
 
-func TestFg_GroupByFirst3Letters_FilesMoved(t *testing.T) {
-	// Arrange
-	ass := assert.New(t)
-	const path = "dir"
-	const content = "src"
-	const f1 = "/file1.txt"
-	const f2 = "/file2.txt"
-	const f3 = "/dile.xml"
-	const f4 = "/eile.html"
+		opt := Options{
+			Path:    test.dir,
+			GroupBy: test.option,
+		}
 
-	//ass := assert.New(t)
-	memfs := afero.NewMemMapFs()
-	memfs.MkdirAll(path, 0755)
-	afero.WriteFile(memfs, path+f1, []byte(content), 0644)
-	afero.WriteFile(memfs, path+f2, []byte(content), 0644)
-	afero.WriteFile(memfs, path+f3, []byte(content), 0644)
-	afero.WriteFile(memfs, path+f4, []byte(content), 0644)
+		// Act
+		fg(opt, memfs)
 
-	opt := Options{
-		Path:    path,
-		GroupBy: "l3",
+		// Assert
+		_, err := memfs.Stat(test.dir + test.sub1 + test.file1)
+		ass.NoError(err)
+		_, err = memfs.Stat(test.dir + test.sub2 + test.file2)
+		ass.NoError(err)
+		_, err = memfs.Stat(test.dir + test.sub3 + test.file3)
+		ass.NoError(err)
+		_, err = memfs.Stat(test.dir + test.sub4 + test.file4)
+		ass.NoError(err)
+		_, err = memfs.Stat(test.dir + test.file1)
+		ass.Error(err)
+		_, err = memfs.Stat(test.dir + test.file2)
+		ass.Error(err)
+		_, err = memfs.Stat(test.dir + test.file3)
+		ass.Error(err)
+		_, err = memfs.Stat(test.dir + test.file4)
+		ass.Error(err)
 	}
-
-	// Act
-	fg(opt, memfs)
-
-	// Assert
-	_, err := memfs.Stat(path + "/fil" + f1)
-	ass.NoError(err)
-	_, err = memfs.Stat(path + "/fil" + f2)
-	ass.NoError(err)
-	_, err = memfs.Stat(path + "/dil" + f3)
-	ass.NoError(err)
-	_, err = memfs.Stat(path + "/eil" + f4)
-	ass.NoError(err)
-	_, err = memfs.Stat(path + f1)
-	ass.Error(err)
-	_, err = memfs.Stat(path + f2)
-	ass.Error(err)
-	_, err = memfs.Stat(path + f3)
-	ass.Error(err)
-	_, err = memfs.Stat(path + f4)
-	ass.Error(err)
 }
