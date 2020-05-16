@@ -11,8 +11,8 @@ var monthCmd = &cobra.Command{
 	Use:     "month",
 	Aliases: []string{"m"},
 	Short:   "Group files by month",
-	Run: func(cmd *cobra.Command, args []string) {
-		fg(appFileSystem, monthGrouper)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return group(appFileSystem, monthGrouper)
 	},
 }
 

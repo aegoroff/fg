@@ -19,10 +19,9 @@ var letterCmd = &cobra.Command{
 			return err
 		}
 
-		fg(appFileSystem, func(info os.FileInfo) []string {
+		return group(appFileSystem, func(info os.FileInfo) []string {
 			return firstGrouper(num, info)
 		})
-		return nil
 	},
 }
 

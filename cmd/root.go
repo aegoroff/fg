@@ -44,17 +44,16 @@ func Execute() {
 	}
 }
 
-func fg(fs afero.Fs, grouper Grouping) {
+func group(fs afero.Fs, grouper Grouping) error {
 	f, err := fs.Open(sourcesPath)
 	if err != nil {
-		log.Fatal(err)
-		return
+		return err
 	}
 	defer f.Close()
 
 	files, err := f.Readdir(-1)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	for _, file := range files {
@@ -71,6 +70,7 @@ func fg(fs afero.Fs, grouper Grouping) {
 		// Only files grouped
 		groupFile(file, sourcesPath, fs, grouper)
 	}
+	return nil
 }
 
 func filterFile(file string, include string, exclude string) bool {
@@ -80,7 +80,7 @@ func filterFile(file string, include string, exclude string) bool {
 	return !isInclude || isExclude
 }
 
-func groupFile(file os.FileInfo, baseDirPath string, fs afero.Fs, grouper Grouping) {
+func groupFile(file os.FileInfo, baseDirPath string, fs afero.Fs, grouper Grouping)  {
 	// Group key will be subdirectory (of base dir) name
 	subdirs := grouper(file)
 

@@ -11,8 +11,8 @@ var dayCmd = &cobra.Command{
 	Use:     "day",
 	Aliases: []string{"d"},
 	Short:   "Group files by day",
-	Run: func(cmd *cobra.Command, args []string) {
-		fg(appFileSystem, dayGrouper)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return group(appFileSystem, dayGrouper)
 	},
 }
 

@@ -11,8 +11,8 @@ var yearCmd = &cobra.Command{
 	Use:     "year",
 	Aliases: []string{"y"},
 	Short:   "Group files by year",
-	Run: func(cmd *cobra.Command, args []string) {
-		fg(appFileSystem, yearGrouper)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return group(appFileSystem, yearGrouper)
 	},
 }
 

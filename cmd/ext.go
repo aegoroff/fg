@@ -11,8 +11,8 @@ var extCmd = &cobra.Command{
 	Use:     "ext",
 	Aliases: []string{"e"},
 	Short:   "Group files by file extension",
-	Run: func(cmd *cobra.Command, args []string) {
-		fg(appFileSystem, extGrouper)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return group(appFileSystem, extGrouper)
 	},
 }
 
