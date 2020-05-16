@@ -20,11 +20,11 @@ func init() {
 	rootCmd.AddCommand(extCmd)
 }
 
-func extGrouper(file os.FileInfo) string {
+func extGrouper(file os.FileInfo) []string {
 	name := file.Name()
 	parts := strings.Split(name, ".")
 	if len(parts) < 2 {
-		return "no extension"
+		return []string{"no extension"}
 	}
-	return parts[len(parts)-1]
+	return []string{parts[len(parts)-1]}
 }

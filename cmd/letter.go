@@ -19,7 +19,7 @@ var letterCmd = &cobra.Command{
 			return err
 		}
 
-		fg(appFileSystem, func(info os.FileInfo) string {
+		fg(appFileSystem, func(info os.FileInfo) []string {
 			return firstGrouper(num, info)
 		})
 		return nil
@@ -31,10 +31,10 @@ func init() {
 	letterCmd.Flags().IntP(numberParamName, "n", 3, "The number of first letters that used to group files")
 }
 
-func firstGrouper(num int, file os.FileInfo) string {
+func firstGrouper(num int, file os.FileInfo) []string {
 	name := file.Name()
 	if len(name) < num {
-		return name
+		return []string{name}
 	}
-	return name[0:num]
+	return []string{name[0:num]}
 }

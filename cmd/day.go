@@ -20,7 +20,7 @@ func init() {
 	rootCmd.AddCommand(dayCmd)
 }
 
-func dayGrouper(file os.FileInfo) string {
+func dayGrouper(file os.FileInfo) []string {
 	year, month, day := file.ModTime().Date()
-	return fmt.Sprintf("%d-%02d-%02d", year, month, day)
+	return []string{fmt.Sprintf("%d-%02d-%02d", year, month, day)}
 }

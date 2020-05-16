@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-type Grouping func(os.FileInfo) string
+type Grouping func(os.FileInfo) []string
 
 var appFileSystem = afero.NewOsFs()
 
@@ -82,9 +82,12 @@ func filterFile(file string, include string, exclude string) bool {
 
 func groupFile(file os.FileInfo, baseDirPath string, fs afero.Fs, grouper Grouping) {
 	// Group key will be subdirectory (of base dir) name
-	grpKey := grouper(file)
+	subdirs := grouper(file)
 
-	targetDirPath := filepath.Join(baseDirPath, grpKey)
+	parts := []string{baseDirPath}
+	parts = append(parts, subdirs...)
+
+	targetDirPath := filepath.Join(parts...)
 
 	// Directory may not exist
 	if _, err := fs.Stat(targetDirPath); os.IsNotExist(err) {

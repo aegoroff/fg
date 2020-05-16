@@ -20,7 +20,7 @@ func init() {
 	rootCmd.AddCommand(yearCmd)
 }
 
-func yearGrouper(file os.FileInfo) string {
+func yearGrouper(file os.FileInfo) []string {
 	year, _, _ := file.ModTime().Date()
-	return fmt.Sprintf("%d", year)
+	return []string{fmt.Sprintf("%d", year)}
 }
