@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -159,13 +159,9 @@ func TestFg_GroupingTests_FilesMoved(t *testing.T) {
 		afero.WriteFile(memfs, test.dir+test.file3, []byte(content), 0644)
 		afero.WriteFile(memfs, test.dir+test.file4, []byte(content), 0644)
 
-		opt := Options{
-			Path:    test.dir,
-			GroupBy: test.option,
-		}
-
 		// Act
-		fg(opt, memfs)
+		rootCmd.SetArgs([]string{test.option, "-p", test.dir })
+		rootCmd.Execute()
 
 		// Assert
 		_, err := memfs.Stat(test.dir + test.sub1 + test.file1)
