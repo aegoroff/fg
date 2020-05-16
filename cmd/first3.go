@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"os"
-	"strings"
 )
 
 // first3Cmd represents the l3 command
@@ -21,10 +20,10 @@ func init() {
 }
 
 func first3Grouper(file os.FileInfo) string {
+	sz := 3
 	name := file.Name()
-	parts := strings.Split(name, ".")
-	if len(parts) < 2 {
-		return "no extension"
+	if len(name) < sz {
+		return name
 	}
-	return parts[len(parts)-1]
+	return name[0:sz]
 }

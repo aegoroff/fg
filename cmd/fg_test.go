@@ -158,6 +158,7 @@ func TestFg_GroupingTests_FilesMoved(t *testing.T) {
 		afero.WriteFile(memfs, test.dir+test.file2, []byte(content), 0644)
 		afero.WriteFile(memfs, test.dir+test.file3, []byte(content), 0644)
 		afero.WriteFile(memfs, test.dir+test.file4, []byte(content), 0644)
+		appFileSystem = memfs
 
 		// Act
 		rootCmd.SetArgs([]string{test.option, "-p", test.dir })
