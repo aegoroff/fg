@@ -339,6 +339,7 @@ func TestFg_UngroupingTestWithFilteringAndCleaning_CountMovedFilesAsSpecifiedNot
 		movedCount int
 	}{
 		{"/f1.txt", "/f1.xml", "*.txt", 1},
+		{"/f1.txt", "/f2.txt", "f1.txt", 1},
 	}
 
 	for _, test := range tests {
