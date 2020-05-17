@@ -162,7 +162,7 @@ func TestFg_GroupingTests_FilesMoved(t *testing.T) {
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{test.option, "-p", dir})
+		rootCmd.SetArgs([]string{test.option, "-p", dir, "-i", ""})
 		rootCmd.Execute()
 
 		// Assert
@@ -218,7 +218,7 @@ func TestFg_UngroupingTests_FilesMoved(t *testing.T) {
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{test.option, "-p", dir})
+		rootCmd.SetArgs([]string{test.option, "-p", dir, "-i", ""})
 		rootCmd.Execute()
 
 		// Assert
@@ -273,7 +273,7 @@ func TestFg_UngroupingTestAndClean_FilesMovedOldDirsRemoved(t *testing.T) {
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{"u", "-p", dir, "-c"})
+		rootCmd.SetArgs([]string{"u", "-p", dir, "-c", "-i", ""})
 		rootCmd.Execute()
 
 		// Assert
@@ -385,7 +385,7 @@ func TestFg_UngroupingTestReadOnlyTarget_CountMovedFilesAsSpecified(t *testing.T
 	appFileSystem = afero.NewReadOnlyFs(memfs)
 
 	// Act
-	rootCmd.SetArgs([]string{"u", "-p", dir, "-c"})
+	rootCmd.SetArgs([]string{"u", "-p", dir, "-c", "-i", ""})
 	rootCmd.Execute()
 
 	// Assert
@@ -394,6 +394,39 @@ func TestFg_UngroupingTestReadOnlyTarget_CountMovedFilesAsSpecified(t *testing.T
 
 	_, err := memfs.Stat(dir + sub)
 	ass.NoError(err)
+}
+
+func TestFg_UngroupingTestSubdirWithoutFiles_CountMovedFilesAsSpecifiedSubdirWithoutFilesNotRemoved(t *testing.T) {
+	// Arrange
+	ass := assert.New(t)
+	const content = "src"
+	dir := "dir1"
+	sub := "/dub"
+	sub1 := "/dub1"
+	file1 := "/f3.txt"
+	file2 := "/f3.xml"
+
+	memfs := afero.NewMemMapFs()
+	memfs.MkdirAll(dir, 0755)
+	memfs.MkdirAll(dir+sub1, 0755)
+	afero.WriteFile(memfs, dir+sub+file1, []byte(content), 0644)
+	afero.WriteFile(memfs, dir+sub+file2, []byte(content), 0644)
+
+	appFileSystem = memfs
+
+	// Act
+	rootCmd.SetArgs([]string{"u", "-p", dir, "-c", "-i", ""})
+	rootCmd.Execute()
+
+	// Assert
+	files := getFileNamesInDir(memfs, dir)
+	ass.Equal(2, len(files), "The number of files in target dont match")
+
+	_, err := memfs.Stat(dir + sub1)
+	ass.NoError(err)
+
+	_, err = memfs.Stat(dir + sub)
+	ass.Error(err)
 }
 
 func TestFg_GroupingTestReadOnlyTarget_CountNotMovedFilesAsSpecified(t *testing.T) {
@@ -413,7 +446,7 @@ func TestFg_GroupingTestReadOnlyTarget_CountNotMovedFilesAsSpecified(t *testing.
 	appFileSystem = afero.NewReadOnlyFs(memfs)
 
 	// Act
-	rootCmd.SetArgs([]string{"e", "-p", dir})
+	rootCmd.SetArgs([]string{"e", "-p", dir, "-i", ""})
 	rootCmd.Execute()
 
 	// Assert
