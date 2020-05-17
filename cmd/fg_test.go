@@ -480,20 +480,20 @@ func TestFg_GroupingTestFirstNFileNameShort_CountMovedFilesAsSpecifiedTargetPath
 	files := getFileNamesInDir(memfs, dir)
 	ass.Equal(0, len(files), "The number of files in target dont match")
 
-	files = getFileNamesInDir(memfs, dir + "/f1.t/")
+	files = getFileNamesInDir(memfs, dir+"/f1.t/")
 	ass.Equal(1, len(files), "The number of files in target dont match")
 
-	files = getFileNamesInDir(memfs, dir + "/f2.tx/")
+	files = getFileNamesInDir(memfs, dir+"/f2.tx/")
 	ass.Equal(1, len(files), "The number of files in target dont match")
 }
 
 func TestFg_GroupingTestFirstNFileInvalidNum_FilesNotMoved(t *testing.T) {
 	var tests = []struct {
-		num      string
+		num string
 	}{
-		{"-1" },
-		{"0" },
-		{"xxx" },
+		{"-1"},
+		{"0"},
+		{"xxx"},
 	}
 	for _, test := range tests {
 		// Arrange
