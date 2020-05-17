@@ -234,6 +234,15 @@ func TestFg_UngroupingTests_FilesMoved(t *testing.T) {
 		_, err = memfs.Stat(test.dir + test.file3)
 		ass.NoError(err)
 
+		_, err = memfs.Stat(test.dir + test.sub1)
+		ass.NoError(err)
+
+		_, err = memfs.Stat(test.dir + test.sub2)
+		ass.NoError(err)
+
+		_, err = memfs.Stat(test.dir + test.sub3)
+		ass.NoError(err)
+
 		files := getFileNamesInDir(memfs, test.dir)
 		ass.Equal(3, len(files), "The number of files in target dont match")
 	}
