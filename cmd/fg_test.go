@@ -125,7 +125,6 @@ func TestFg_GroupingTests_FilesMoved(t *testing.T) {
 
 	var tests = []struct {
 		option string
-		dir    string
 		file1  string
 		file2  string
 		file3  string
@@ -135,53 +134,56 @@ func TestFg_GroupingTests_FilesMoved(t *testing.T) {
 		sub3   string
 		sub4   string
 	}{
-		{"d", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", today, today, today, today},
-		{"day", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", today, today, today, today},
-		{"m", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", month, month, month, month},
-		{"month", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", month, month, month, month},
-		{"y", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", year, year, year, year},
-		{"year", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", year, year, year, year},
-		{"ext", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", "/txt", "/txt", "/xml", "/html"},
-		{"ext", "dir", "/f1", "/f2.txt", "/f3.xml", "/f4.html", "/no extension", "/txt", "/xml", "/html"},
-		{"firstn", "dir", "/file1.txt", "/file2.txt", "/dile.xml", "/eile.html", "/fil", "/fil", "/dil", "/eil"},
+		{"d", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", today, today, today, today},
+		{"day", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", today, today, today, today},
+		{"m", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", month, month, month, month},
+		{"month", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", month, month, month, month},
+		{"y", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", year, year, year, year},
+		{"year", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", year, year, year, year},
+		{"ext", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", "/txt", "/txt", "/xml", "/html"},
+		{"e", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", "/txt", "/txt", "/xml", "/html"},
+		{"ext", "/f1", "/f2.txt", "/f3.xml", "/f4.html", "/no extension", "/txt", "/xml", "/html"},
+		{"firstn", "/file1.txt", "/file2.txt", "/dile.xml", "/eile.html", "/fil", "/fil", "/dil", "/eil"},
+		{"fn", "/file1.txt", "/file2.txt", "/dile.xml", "/eile.html", "/fil", "/fil", "/dil", "/eil"},
 	}
 
 	for _, test := range tests {
 		// Arrange
 		ass := assert.New(t)
 		const content = "src"
+		dir := "dir"
 
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(test.dir, 0755)
-		afero.WriteFile(memfs, test.dir+test.file1, []byte(content), 0644)
-		afero.WriteFile(memfs, test.dir+test.file2, []byte(content), 0644)
-		afero.WriteFile(memfs, test.dir+test.file3, []byte(content), 0644)
-		afero.WriteFile(memfs, test.dir+test.file4, []byte(content), 0644)
+		memfs.MkdirAll(dir, 0755)
+		afero.WriteFile(memfs, dir+test.file1, []byte(content), 0644)
+		afero.WriteFile(memfs, dir+test.file2, []byte(content), 0644)
+		afero.WriteFile(memfs, dir+test.file3, []byte(content), 0644)
+		afero.WriteFile(memfs, dir+test.file4, []byte(content), 0644)
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{test.option, "-p", test.dir})
+		rootCmd.SetArgs([]string{test.option, "-p", dir})
 		rootCmd.Execute()
 
 		// Assert
-		_, err := memfs.Stat(test.dir + test.sub1 + test.file1)
+		_, err := memfs.Stat(dir + test.sub1 + test.file1)
 		ass.NoError(err)
-		_, err = memfs.Stat(test.dir + test.sub2 + test.file2)
+		_, err = memfs.Stat(dir + test.sub2 + test.file2)
 		ass.NoError(err)
-		_, err = memfs.Stat(test.dir + test.sub3 + test.file3)
+		_, err = memfs.Stat(dir + test.sub3 + test.file3)
 		ass.NoError(err)
-		_, err = memfs.Stat(test.dir + test.sub4 + test.file4)
+		_, err = memfs.Stat(dir + test.sub4 + test.file4)
 		ass.NoError(err)
-		_, err = memfs.Stat(test.dir + test.file1)
+		_, err = memfs.Stat(dir + test.file1)
 		ass.Error(err)
-		_, err = memfs.Stat(test.dir + test.file2)
+		_, err = memfs.Stat(dir + test.file2)
 		ass.Error(err)
-		_, err = memfs.Stat(test.dir + test.file3)
+		_, err = memfs.Stat(dir + test.file3)
 		ass.Error(err)
-		_, err = memfs.Stat(test.dir + test.file4)
+		_, err = memfs.Stat(dir + test.file4)
 		ass.Error(err)
 
-		files := getFileNamesInDir(memfs, test.dir)
+		files := getFileNamesInDir(memfs, dir)
 		ass.Equal(0, len(files), "The number of files in target dont match")
 	}
 }
@@ -189,7 +191,6 @@ func TestFg_GroupingTests_FilesMoved(t *testing.T) {
 func TestFg_UngroupingTests_FilesMoved(t *testing.T) {
 	var tests = []struct {
 		option string
-		dir    string
 		file1  string
 		file2  string
 		file3  string
@@ -197,170 +198,171 @@ func TestFg_UngroupingTests_FilesMoved(t *testing.T) {
 		sub2   string
 		sub3   string
 	}{
-		{"u", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/txt", "/txt", "/xml"},
-		{"u", "dir", "/f1.txt", "/f1.txt", "/f3.xml", "/txt", "/txt1", "/xml"},
-		{"u", "dir", "/f1.txt", "/f1.txt", "/f1.txt", "/txt", "/txt1", "/xml"},
+		{"u", "/f1.txt", "/f2.txt", "/f3.xml", "/txt", "/txt", "/xml"},
+		{"ungroup", "/f1.txt", "/f2.txt", "/f3.xml", "/txt", "/txt", "/xml"},
+		{"u", "/f1.txt", "/f1.txt", "/f3.xml", "/txt", "/txt1", "/xml"},
+		{"u", "/f1.txt", "/f1.txt", "/f1.txt", "/txt", "/txt1", "/xml"},
 	}
 
 	for _, test := range tests {
 		// Arrange
 		ass := assert.New(t)
 		const content = "src"
+		dir := "dir"
 
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(test.dir, 0755)
-		afero.WriteFile(memfs, test.dir+test.sub1+test.file1, []byte(content), 0644)
-		afero.WriteFile(memfs, test.dir+test.sub2+test.file2, []byte(content), 0644)
-		afero.WriteFile(memfs, test.dir+test.sub3+test.file3, []byte(content), 0644)
+		memfs.MkdirAll(dir, 0755)
+		afero.WriteFile(memfs, dir+test.sub1+test.file1, []byte(content), 0644)
+		afero.WriteFile(memfs, dir+test.sub2+test.file2, []byte(content), 0644)
+		afero.WriteFile(memfs, dir+test.sub3+test.file3, []byte(content), 0644)
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{test.option, "-p", test.dir})
+		rootCmd.SetArgs([]string{test.option, "-p", dir})
 		rootCmd.Execute()
 
 		// Assert
-		_, err := memfs.Stat(test.dir + test.sub1 + test.file1)
+		_, err := memfs.Stat(dir + test.sub1 + test.file1)
 		ass.Error(err)
-		_, err = memfs.Stat(test.dir + test.sub2 + test.file2)
+		_, err = memfs.Stat(dir + test.sub2 + test.file2)
 		ass.Error(err)
-		_, err = memfs.Stat(test.dir + test.sub3 + test.file3)
+		_, err = memfs.Stat(dir + test.sub3 + test.file3)
 		ass.Error(err)
-		_, err = memfs.Stat(test.dir + test.file1)
+		_, err = memfs.Stat(dir + test.file1)
 		ass.NoError(err)
-		_, err = memfs.Stat(test.dir + test.file2)
+		_, err = memfs.Stat(dir + test.file2)
 		ass.NoError(err)
-		_, err = memfs.Stat(test.dir + test.file3)
-		ass.NoError(err)
-
-		_, err = memfs.Stat(test.dir + test.sub1)
+		_, err = memfs.Stat(dir + test.file3)
 		ass.NoError(err)
 
-		_, err = memfs.Stat(test.dir + test.sub2)
+		_, err = memfs.Stat(dir + test.sub1)
 		ass.NoError(err)
 
-		_, err = memfs.Stat(test.dir + test.sub3)
+		_, err = memfs.Stat(dir + test.sub2)
 		ass.NoError(err)
 
-		files := getFileNamesInDir(memfs, test.dir)
+		_, err = memfs.Stat(dir + test.sub3)
+		ass.NoError(err)
+
+		files := getFileNamesInDir(memfs, dir)
 		ass.Equal(3, len(files), "The number of files in target dont match")
 	}
 }
 
 func TestFg_UngroupingTestAndClean_FilesMovedOldDirsRemoved(t *testing.T) {
 	var tests = []struct {
-		option string
-		dir    string
-		file1  string
-		file2  string
-		sub1   string
-		sub2   string
+		file1 string
+		file2 string
+		sub1  string
+		sub2  string
 	}{
-		{"u", "dir", "/f1.txt", "/f2.txt", "/txt", "/txt"},
-		{"u", "dir", "/f1.txt", "/f1.txt", "/txt", "/txt1"},
+		{"/f1.txt", "/f2.txt", "/txt", "/txt"},
+		{"/f1.txt", "/f1.txt", "/txt", "/txt1"},
 	}
 
 	for _, test := range tests {
 		// Arrange
 		ass := assert.New(t)
 		const content = "src"
+		dir := "dir"
 
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(test.dir, 0755)
-		afero.WriteFile(memfs, test.dir+test.sub1+test.file1, []byte(content), 0644)
-		afero.WriteFile(memfs, test.dir+test.sub2+test.file2, []byte(content), 0644)
+		memfs.MkdirAll(dir, 0755)
+		afero.WriteFile(memfs, dir+test.sub1+test.file1, []byte(content), 0644)
+		afero.WriteFile(memfs, dir+test.sub2+test.file2, []byte(content), 0644)
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{test.option, "-p", test.dir, "-c"})
+		rootCmd.SetArgs([]string{"u", "-p", dir, "-c"})
 		rootCmd.Execute()
 
 		// Assert
-		_, err := memfs.Stat(test.dir + test.sub1 + test.file1)
+		_, err := memfs.Stat(dir + test.sub1 + test.file1)
 		ass.Error(err)
-		_, err = memfs.Stat(test.dir + test.sub2 + test.file2)
+		_, err = memfs.Stat(dir + test.sub2 + test.file2)
 		ass.Error(err)
-		_, err = memfs.Stat(test.dir + test.file1)
+		_, err = memfs.Stat(dir + test.file1)
 		ass.NoError(err)
-		_, err = memfs.Stat(test.dir + test.file2)
+		_, err = memfs.Stat(dir + test.file2)
 		ass.NoError(err)
 
-		_, err = memfs.Stat(test.dir + test.sub1)
+		_, err = memfs.Stat(dir + test.sub1)
 		ass.Error(err)
 
-		_, err = memfs.Stat(test.dir + test.sub2)
+		_, err = memfs.Stat(dir + test.sub2)
 		ass.Error(err)
 
-		files := getFileNamesInDir(memfs, test.dir)
+		files := getFileNamesInDir(memfs, dir)
 		ass.Equal(2, len(files), "The number of files in target dont match")
 	}
 }
 
 func TestFg_UngroupingTestWithFiltering_CountMovedFilesAsSpecified(t *testing.T) {
 	var tests = []struct {
-		dir     string
-		file1   string
-		file2   string
-		include string
+		file1      string
+		file2      string
+		include    string
 		movedCount int
 	}{
-		{"dir", "/f1.txt", "/f1.xml", "*.txt", 1},
-		{"dir", "/f1.txt", "/f1.xml", "*.exe", 0},
+		{"/f1.txt", "/f1.xml", "*.txt", 1},
+		{"/f1.txt", "/f1.xml", "*.exe", 0},
 	}
 
 	for _, test := range tests {
 		// Arrange
 		ass := assert.New(t)
 		const content = "src"
+		dir := "dir"
 
 		sub := "/sub"
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(test.dir, 0755)
-		afero.WriteFile(memfs, test.dir+sub+test.file1, []byte(content), 0644)
-		afero.WriteFile(memfs, test.dir+sub+test.file2, []byte(content), 0644)
+		memfs.MkdirAll(dir, 0755)
+		afero.WriteFile(memfs, dir+sub+test.file1, []byte(content), 0644)
+		afero.WriteFile(memfs, dir+sub+test.file2, []byte(content), 0644)
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{"u", "-p", test.dir, "-i", test.include})
+		rootCmd.SetArgs([]string{"u", "-p", dir, "-i", test.include})
 		rootCmd.Execute()
 
 		// Assert
-		files := getFileNamesInDir(memfs, test.dir)
+		files := getFileNamesInDir(memfs, dir)
 		ass.Equal(test.movedCount, len(files), "The number of files in target dont match")
 	}
 }
 
 func TestFg_UngroupingTestWithFilteringAndCleaning_CountMovedFilesAsSpecifiedNotEmptySubdirsExist(t *testing.T) {
 	var tests = []struct {
-		dir     string
-		file1   string
-		file2   string
-		include string
+		file1      string
+		file2      string
+		include    string
 		movedCount int
 	}{
-		{"dir", "/f1.txt", "/f1.xml", "*.txt", 1},
+		{"/f1.txt", "/f1.xml", "*.txt", 1},
 	}
 
 	for _, test := range tests {
 		// Arrange
 		ass := assert.New(t)
 		const content = "src"
+		dir := "dir"
 
 		sub := "/sub"
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(test.dir, 0755)
-		afero.WriteFile(memfs, test.dir+sub+test.file1, []byte(content), 0644)
-		afero.WriteFile(memfs, test.dir+sub+test.file2, []byte(content), 0644)
+		memfs.MkdirAll(dir, 0755)
+		afero.WriteFile(memfs, dir+sub+test.file1, []byte(content), 0644)
+		afero.WriteFile(memfs, dir+sub+test.file2, []byte(content), 0644)
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{"u", "-p", test.dir, "-i", test.include, "-c"})
+		rootCmd.SetArgs([]string{"u", "-p", dir, "-i", test.include, "-c"})
 		rootCmd.Execute()
 
 		// Assert
-		files := getFileNamesInDir(memfs, test.dir)
+		files := getFileNamesInDir(memfs, dir)
 		ass.Equal(test.movedCount, len(files), "The number of files in target dont match")
 
-		_, err := memfs.Stat(test.dir + sub)
+		_, err := memfs.Stat(dir + sub)
 		ass.NoError(err)
 	}
 }
