@@ -1,5 +1,6 @@
 fg
 ==
+[![codecov](https://codecov.io/gh/aegoroff/fg/branch/master/graph/badge.svg)](https://codecov.io/gh/aegoroff/fg)
 
 A small commandline app written in Go that allows you to easily group
 all files in the dir specified into several child subdirectories.
