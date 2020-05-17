@@ -123,6 +123,9 @@ func ungroup(fs afero.Fs, isClean bool) error {
 	// cleanup old dirs
 	if isClean {
 		for k, _ := range oldSubDirs {
+			if !isDirEmpty(fs, k) {
+				continue
+			}
 			err = fs.Remove(k)
 			if err != nil {
 				log.Printf("%v", err)
@@ -131,4 +134,24 @@ func ungroup(fs afero.Fs, isClean bool) error {
 	}
 
 	return nil
+}
+
+func isDirEmpty(fs afero.Fs, path string) bool {
+	base, err := fs.Open(path)
+	if err != nil {
+		return false
+	}
+
+	defer base.Close()
+	items, err := base.Readdir(-1)
+	if err != nil {
+		return false
+	}
+	for _, file := range items {
+		if file.IsDir() {
+			continue
+		}
+		return false
+	}
+	return true
 }

@@ -329,6 +329,42 @@ func TestFg_UngroupingTestWithFiltering_CountMovedFilesAsSpecified(t *testing.T)
 	}
 }
 
+func TestFg_UngroupingTestWithFilteringAndCleaning_CountMovedFilesAsSpecifiedNotEmptySubdirsExist(t *testing.T) {
+	var tests = []struct {
+		dir     string
+		file1   string
+		file2   string
+		include string
+		movedCount int
+	}{
+		{"dir", "/f1.txt", "/f1.xml", "*.txt", 1},
+	}
+
+	for _, test := range tests {
+		// Arrange
+		ass := assert.New(t)
+		const content = "src"
+
+		sub := "/sub"
+		memfs := afero.NewMemMapFs()
+		memfs.MkdirAll(test.dir, 0755)
+		afero.WriteFile(memfs, test.dir+sub+test.file1, []byte(content), 0644)
+		afero.WriteFile(memfs, test.dir+sub+test.file2, []byte(content), 0644)
+		appFileSystem = memfs
+
+		// Act
+		rootCmd.SetArgs([]string{"u", "-p", test.dir, "-i", test.include, "-c"})
+		rootCmd.Execute()
+
+		// Assert
+		files := getFileNamesInDir(memfs, test.dir)
+		ass.Equal(test.movedCount, len(files), "The number of files in target dont match")
+
+		_, err := memfs.Stat(test.dir + sub)
+		ass.NoError(err)
+	}
+}
+
 func getFileNamesInDir(fs afero.Fs, path string) []string {
 	base, _ := fs.Open(path)
 	defer base.Close()
