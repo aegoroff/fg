@@ -151,7 +151,6 @@ func TestFg_GroupingTests_FilesMoved(t *testing.T) {
 		ass := assert.New(t)
 		const content = "src"
 
-		//ass := assert.New(t)
 		memfs := afero.NewMemMapFs()
 		memfs.MkdirAll(test.dir, 0755)
 		afero.WriteFile(memfs, test.dir+test.file1, []byte(content), 0644)
@@ -208,7 +207,6 @@ func TestFg_UngroupingTests_FilesMoved(t *testing.T) {
 		ass := assert.New(t)
 		const content = "src"
 
-		//ass := assert.New(t)
 		memfs := afero.NewMemMapFs()
 		memfs.MkdirAll(test.dir, 0755)
 		afero.WriteFile(memfs, test.dir+test.sub1+test.file1, []byte(content), 0644)
@@ -266,7 +264,6 @@ func TestFg_UngroupingTestAndClean_FilesMovedOldDirsRemoved(t *testing.T) {
 		ass := assert.New(t)
 		const content = "src"
 
-		//ass := assert.New(t)
 		memfs := afero.NewMemMapFs()
 		memfs.MkdirAll(test.dir, 0755)
 		afero.WriteFile(memfs, test.dir+test.sub1+test.file1, []byte(content), 0644)
@@ -295,6 +292,40 @@ func TestFg_UngroupingTestAndClean_FilesMovedOldDirsRemoved(t *testing.T) {
 
 		files := getFileNamesInDir(memfs, test.dir)
 		ass.Equal(2, len(files), "The number of files in target dont match")
+	}
+}
+
+func TestFg_UngroupingTestWithFiltering_CountMovedFilesAsSpecified(t *testing.T) {
+	var tests = []struct {
+		dir     string
+		file1   string
+		file2   string
+		include string
+		movedCount int
+	}{
+		{"dir", "/f1.txt", "/f1.xml", "*.txt", 1},
+		{"dir", "/f1.txt", "/f1.xml", "*.exe", 0},
+	}
+
+	for _, test := range tests {
+		// Arrange
+		ass := assert.New(t)
+		const content = "src"
+
+		sub := "/sub"
+		memfs := afero.NewMemMapFs()
+		memfs.MkdirAll(test.dir, 0755)
+		afero.WriteFile(memfs, test.dir+sub+test.file1, []byte(content), 0644)
+		afero.WriteFile(memfs, test.dir+sub+test.file2, []byte(content), 0644)
+		appFileSystem = memfs
+
+		// Act
+		rootCmd.SetArgs([]string{"u", "-p", test.dir, "-i", test.include})
+		rootCmd.Execute()
+
+		// Assert
+		files := getFileNamesInDir(memfs, test.dir)
+		ass.Equal(test.movedCount, len(files), "The number of files in target dont match")
 	}
 }
 

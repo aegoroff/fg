@@ -85,6 +85,11 @@ func ungroup(fs afero.Fs, isClean bool) error {
 					continue
 				}
 
+				// skip files if necessary
+				if filterFile(file.Name(), include, exclude) {
+					continue
+				}
+
 				filech <- &fileItem{path: sub, name: file.Name()}
 			}
 		}
