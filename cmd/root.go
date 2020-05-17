@@ -22,8 +22,8 @@ var exclude string
 var rootCmd = &cobra.Command{
 	Use:   "fg",
 	Short: "Grouping files tool",
-	Long: `fg is a small commandline app that allows you to easily group
-all files in the dir specified into several child subdirectories.`,
+	Long: ` fg is a small commandline app that allows you to easily group
+ all files in the dir specified into several child subdirectories.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return cmd.Help()
 	},
@@ -34,7 +34,6 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&basePath, pathParamName, "p", "", "REQUIRED. Directory path whose files will be grouped by folders.")
 	rootCmd.PersistentFlags().StringVarP(&include, "include", "i", "", "Only files whose names match the pattern specified by the option are grouped.")
 	rootCmd.PersistentFlags().StringVarP(&exclude, "exclude", "e", "", "Exclude files whose names match pattern specified by the option from grouping.")
-	rootCmd.MarkPersistentFlagRequired(pathParamName)
 }
 
 // Execute starts package running
