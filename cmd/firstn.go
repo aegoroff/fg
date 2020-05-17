@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -17,6 +18,9 @@ var firstnCmd = &cobra.Command{
 		num, err := cmd.Flags().GetInt(numberParamName)
 		if err != nil {
 			return err
+		}
+		if num <= 0 {
+			return errors.New("Number must be positive")
 		}
 
 		return group(appFileSystem, func(info os.FileInfo) []string {

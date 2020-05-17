@@ -457,6 +457,69 @@ func TestFg_GroupingTestReadOnlyTarget_CountNotMovedFilesAsSpecified(t *testing.
 	ass.Error(err)
 }
 
+func TestFg_GroupingTestFirstNFileNameShort_CountMovedFilesAsSpecifiedTargetPathAsSpecified(t *testing.T) {
+	// Arrange
+	ass := assert.New(t)
+	const content = "src"
+	dir := "dir"
+	file1 := "/f1.t"
+	file2 := "/f2.txt"
+
+	memfs := afero.NewMemMapFs()
+	memfs.MkdirAll(dir, 0755)
+	afero.WriteFile(memfs, dir+file1, []byte(content), 0644)
+	afero.WriteFile(memfs, dir+file2, []byte(content), 0644)
+
+	appFileSystem = memfs
+
+	// Act
+	rootCmd.SetArgs([]string{"fn", "-p", dir, "-i", "", "-n", "5"})
+	rootCmd.Execute()
+
+	// Assert
+	files := getFileNamesInDir(memfs, dir)
+	ass.Equal(0, len(files), "The number of files in target dont match")
+
+	files = getFileNamesInDir(memfs, dir + "/f1.t/")
+	ass.Equal(1, len(files), "The number of files in target dont match")
+
+	files = getFileNamesInDir(memfs, dir + "/f2.tx/")
+	ass.Equal(1, len(files), "The number of files in target dont match")
+}
+
+func TestFg_GroupingTestFirstNFileInvalidNum_FilesNotMoved(t *testing.T) {
+	var tests = []struct {
+		num      string
+	}{
+		{"-1" },
+		{"0" },
+		{"xxx" },
+	}
+	for _, test := range tests {
+		// Arrange
+		ass := assert.New(t)
+		const content = "src"
+		dir := "dir"
+		file1 := "/f1.txt"
+		file2 := "/f2.txt"
+
+		memfs := afero.NewMemMapFs()
+		memfs.MkdirAll(dir, 0755)
+		afero.WriteFile(memfs, dir+file1, []byte(content), 0644)
+		afero.WriteFile(memfs, dir+file2, []byte(content), 0644)
+
+		appFileSystem = memfs
+
+		// Act
+		rootCmd.SetArgs([]string{"fn", "-p", dir, "-i", "", "-n", test.num})
+		rootCmd.Execute()
+
+		// Assert
+		files := getFileNamesInDir(memfs, dir)
+		ass.Equal(2, len(files), "The number of files in target dont match")
+	}
+}
+
 func getFileNamesInDir(fs afero.Fs, path string) []string {
 	base, _ := fs.Open(path)
 	defer base.Close()
