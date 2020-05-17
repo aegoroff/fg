@@ -143,7 +143,7 @@ func TestFg_GroupingTests_FilesMoved(t *testing.T) {
 		{"year", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", year, year, year, year},
 		{"ext", "dir", "/f1.txt", "/f2.txt", "/f3.xml", "/f4.html", "/txt", "/txt", "/xml", "/html"},
 		{"ext", "dir", "/f1", "/f2.txt", "/f3.xml", "/f4.html", "/no extension", "/txt", "/xml", "/html"},
-		{"letter", "dir", "/file1.txt", "/file2.txt", "/dile.xml", "/eile.html", "/fil", "/fil", "/dil", "/eil"},
+		{"firstn", "dir", "/file1.txt", "/file2.txt", "/dile.xml", "/eile.html", "/fil", "/fil", "/dil", "/eil"},
 	}
 
 	for _, test := range tests {

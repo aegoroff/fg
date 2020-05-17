@@ -7,10 +7,10 @@ import (
 
 const numberParamName = "number"
 
-// letterCmd represents the letter command
-var letterCmd = &cobra.Command{
-	Use:     "letter",
-	Aliases: []string{},
+// firstnCmd represents the firstn command
+var firstnCmd = &cobra.Command{
+	Use:     "firstn",
+	Aliases: []string{"fn"},
 	Short:   "Group files by first N letters of a name. By default 3",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
@@ -26,8 +26,8 @@ var letterCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(letterCmd)
-	letterCmd.Flags().IntP(numberParamName, "n", 3, "The number of first letters that used to group files")
+	rootCmd.AddCommand(firstnCmd)
+	firstnCmd.Flags().IntP(numberParamName, "n", 3, "The number of first letters that used to group files")
 }
 
 func firstGrouper(num int, file os.FileInfo) []string {
