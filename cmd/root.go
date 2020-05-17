@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -12,6 +13,7 @@ import (
 type Grouping func(os.FileInfo) []string
 
 var appFileSystem = afero.NewOsFs()
+var appWriter io.Writer
 
 const pathParamName = "path"
 
@@ -32,6 +34,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	cobra.MousetrapHelpText = ""
+	appWriter = os.Stdout
 	rootCmd.PersistentFlags().StringVarP(&basePath, pathParamName, "p", "", "REQUIRED. Directory path whose files will be grouped by folders.")
 	rootCmd.PersistentFlags().StringVarP(&include, "include", "i", "", "Only files whose names match the pattern specified by the option are grouped.")
 	rootCmd.PersistentFlags().StringVarP(&exclude, "exclude", "e", "", "Exclude files whose names match pattern specified by the option from grouping.")

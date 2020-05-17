@@ -31,7 +31,7 @@ stack: go 1.13
 image: Visual Studio 2017
 
 build_script:
-  - go build fg
+  - go build -ldflags "-X fg/cmd.Version=%APPVEYOR_BUILD_VERSION%" fg
 
 test_script:
   - go test -coverprofile=coverage.txt -covermode=atomic fg/...
