@@ -122,7 +122,7 @@ func ungroup(fs afero.Fs, isClean bool) error {
 
 	// cleanup old dirs
 	if isClean {
-		for k, _ := range oldSubDirs {
+		for k := range oldSubDirs {
 			if !isDirEmpty(fs, k) {
 				continue
 			}

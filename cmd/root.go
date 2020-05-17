@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 )
 
+// Grouping function
 type Grouping func(os.FileInfo) []string
 
 var appFileSystem = afero.NewOsFs()
