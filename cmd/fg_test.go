@@ -368,6 +368,35 @@ func TestFg_UngroupingTestWithFilteringAndCleaning_CountMovedFilesAsSpecifiedNot
 	}
 }
 
+func TestFg_UngroupingTestReadOnlyTarget_CountMovedFilesAsSpecified(t *testing.T) {
+	// Arrange
+	ass := assert.New(t)
+	const content = "src"
+	dir := "dir"
+	sub := "/sub"
+	file1 := "/f1.txt"
+	file2 := "/f1.xml"
+
+	memfs := afero.NewMemMapFs()
+	memfs.MkdirAll(dir, 0755)
+	afero.WriteFile(memfs, dir+sub+file1, []byte(content), 0644)
+	afero.WriteFile(memfs, dir+sub+file2, []byte(content), 0644)
+
+
+	appFileSystem = afero.NewReadOnlyFs(memfs)
+
+	// Act
+	rootCmd.SetArgs([]string{"u", "-p", dir, "-c"})
+	rootCmd.Execute()
+
+	// Assert
+	files := getFileNamesInDir(memfs, dir)
+	ass.Equal(0, len(files), "The number of files in target dont match")
+
+	_, err := memfs.Stat(dir + sub)
+	ass.NoError(err)
+}
+
 func getFileNamesInDir(fs afero.Fs, path string) []string {
 	base, _ := fs.Open(path)
 	defer base.Close()
