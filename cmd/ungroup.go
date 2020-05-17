@@ -4,8 +4,17 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"log"
+	"os"
 	"path/filepath"
+	"strings"
 )
+
+type fileItem struct {
+	path string
+	name string
+}
+
+const removeEmptyParamName = "clean"
 
 // ungroupCmd represents the ungroup command
 var ungroupCmd = &cobra.Command{
@@ -13,63 +22,107 @@ var ungroupCmd = &cobra.Command{
 	Aliases: []string{"u"},
 	Short:   "Ungroups file in a directory i.e. copies all files from subdirectories into parent one",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return ungroup(appFileSystem)
+		isClean, err := cmd.Flags().GetBool(removeEmptyParamName)
+		if err != nil {
+			return err
+		}
+
+		return ungroup(appFileSystem, isClean)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(ungroupCmd)
+	ungroupCmd.Flags().BoolP(removeEmptyParamName, "c", false, "Remove empty subdirectories after ungrouping")
 }
 
-func ungroup(fs afero.Fs) error {
-	f, err := fs.Open(sourcesPath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	items, err := f.Readdir(-1)
+func ungroup(fs afero.Fs, isClean bool) error {
+	base, err := fs.Open(basePath)
 	if err != nil {
 		return err
 	}
 
-	subdirs := []string{}
-	for _, file := range items {
-		// skip directories
-		if file.IsDir() {
-			subdirs = append(subdirs, file.Name())
-		}
+	items, err := base.Readdir(-1)
+	if err != nil {
+		base.Close()
+		return err
 	}
 
-	for _, d := range subdirs {
-		sub := filepath.Join(sourcesPath, d)
-		s, err := fs.Open(sub)
-		if err != nil {
-			continue
-		}
+	subch := make(chan string, 16)
 
-		items, err := s.Readdir(-1)
-		if err != nil {
-			continue
+	// Enumerate all subdirs
+	go func() {
+		defer close(subch)
+		// Close base path after reading all subdirs
+		defer base.Close()
+		for _, item := range items {
+			if item.IsDir() {
+				subch <- filepath.Join(basePath, item.Name())
+			}
 		}
+	}()
 
-		for _, file := range items {
-			// skip directories
-			if file.IsDir() {
+	filech := make(chan *fileItem, 16)
+
+	// enumerate files in all subdirs
+	go func() {
+		defer close(filech)
+		for sub := range subch {
+			s, err := fs.Open(sub)
+			if err != nil {
+				continue
+			}
+			defer s.Close()
+
+			items, err := s.Readdir(-1)
+			if err != nil {
 				continue
 			}
 
-			oldFilePath := filepath.Join(sourcesPath, d, file.Name())
-			newFilePath := filepath.Join(sourcesPath, file.Name())
+			for _, file := range items {
+				// skip directories
+				if file.IsDir() {
+					continue
+				}
 
-			if err := fs.Rename(oldFilePath, newFilePath); err != nil {
-				log.Printf("%v", err)
-			} else {
-				log.Printf("File %s moved to %s", oldFilePath, newFilePath)
+				filech <- &fileItem{path: sub, name: file.Name()}
 			}
 		}
+	}()
 
-		s.Close()
+	uniquePaths := make(map[string]interface{})
+	oldSubDirs := make(map[string]interface{})
+
+	// rename files
+	for f := range filech {
+		oldFilePath := filepath.Join(f.path, f.name)
+		newFilePath := filepath.Join(basePath, f.name)
+
+		if _, ok := oldSubDirs[f.path]; !ok {
+			oldSubDirs[f.path] = nil
+		}
+
+		if _, ok := uniquePaths[newFilePath]; ok {
+			d, f := filepath.Split(oldFilePath)
+			sep := string(os.PathSeparator)
+			baseDirParts := strings.Split(strings.Trim(basePath, sep), sep)
+			dirParts := strings.Split(strings.Trim(d, sep), sep)
+			newNameParts := append(dirParts[len(baseDirParts):], f)
+
+			newFilePath = filepath.Join(basePath, strings.Join(newNameParts, "-"))
+		}
+		rename(fs, oldFilePath, newFilePath)
+		uniquePaths[newFilePath] = nil
+	}
+
+	// cleanup old dirs
+	if isClean {
+		for k, _ := range oldSubDirs {
+			err = fs.Remove(k)
+			if err != nil {
+				log.Printf("%v", err)
+			}
+		}
 	}
 
 	return nil

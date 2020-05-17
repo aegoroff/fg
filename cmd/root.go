@@ -14,7 +14,7 @@ var appFileSystem = afero.NewOsFs()
 
 const pathParamName = "path"
 
-var sourcesPath string
+var basePath string
 var include string
 var exclude string
 
@@ -31,7 +31,7 @@ all files in the dir specified into several child subdirectories.`,
 
 func init() {
 	cobra.MousetrapHelpText = ""
-	rootCmd.PersistentFlags().StringVarP(&sourcesPath, pathParamName, "p", "", "REQUIRED. Directory path whose files will be grouped by folders.")
+	rootCmd.PersistentFlags().StringVarP(&basePath, pathParamName, "p", "", "REQUIRED. Directory path whose files will be grouped by folders.")
 	rootCmd.PersistentFlags().StringVarP(&include, "include", "i", "", "Only files whose names match the pattern specified by the option are grouped.")
 	rootCmd.PersistentFlags().StringVarP(&exclude, "exclude", "e", "", "Exclude files whose names match pattern specified by the option from grouping.")
 	rootCmd.MarkPersistentFlagRequired(pathParamName)
@@ -45,7 +45,7 @@ func Execute() {
 }
 
 func group(fs afero.Fs, grouper Grouping) error {
-	f, err := fs.Open(sourcesPath)
+	f, err := fs.Open(basePath)
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func group(fs afero.Fs, grouper Grouping) error {
 		}
 
 		// Only files grouped
-		groupFile(file, sourcesPath, fs, grouper)
+		groupFile(file, basePath, fs, grouper)
 	}
 	return nil
 }
@@ -80,7 +80,7 @@ func filterFile(file string, include string, exclude string) bool {
 	return !isInclude || isExclude
 }
 
-func groupFile(file os.FileInfo, baseDirPath string, fs afero.Fs, grouper Grouping)  {
+func groupFile(file os.FileInfo, baseDirPath string, fs afero.Fs, grouper Grouping) {
 	// Group key will be subdirectory (of base dir) name
 	subdirs := grouper(file)
 
@@ -97,13 +97,17 @@ func groupFile(file os.FileInfo, baseDirPath string, fs afero.Fs, grouper Groupi
 		}
 	}
 
-	sourcePath := filepath.Join(baseDirPath, file.Name())
-	targetPath := filepath.Join(targetDirPath, file.Name())
+	oldFilePath := filepath.Join(baseDirPath, file.Name())
+	newFilePath := filepath.Join(targetDirPath, file.Name())
 
-	if err := fs.Rename(sourcePath, targetPath); err != nil {
+	rename(fs, oldFilePath, newFilePath)
+}
+
+func rename(fs afero.Fs, oldFilePath string, newFilePath string) {
+	if err := fs.Rename(oldFilePath, newFilePath); err != nil {
 		log.Printf("%v", err)
 	} else {
-		log.Printf("File %s moved to %s", sourcePath, targetPath)
+		log.Printf("File %s moved to %s", oldFilePath, newFilePath)
 	}
 }
 
