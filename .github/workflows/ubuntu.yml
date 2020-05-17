@@ -33,7 +33,7 @@ jobs:
         fi
 
     - name: Build
-      run: go build aegoroff/fg
+      run: go build -v .
 
     - name: Test
-      run: go test aegoroff/fg/cmd
+      run: go test -v .
