@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/aegoroff/godatastruct/collections"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"log"
@@ -96,8 +97,8 @@ func ungroup(fs afero.Fs, isClean bool) error {
 		}
 	}()
 
-	uniquePaths := make(StringHashSet)
-	oldSubDirs := make(StringHashSet)
+	uniquePaths := make(collections.StringHashSet)
+	oldSubDirs := make(collections.StringHashSet)
 
 	// rename files
 	for f := range filech {
