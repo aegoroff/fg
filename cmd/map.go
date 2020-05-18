@@ -1,9 +1,9 @@
 package cmd
 
-// Defines string keys map
+// StringKeyMap defines string keys map
 type StringKeyMap map[string]interface{}
 
-// ContainsKey gets all map's keys
+// Keys gets all map's keys
 func (m *StringKeyMap) Keys() []string {
 	keys := make([]string, 0, len(*m))
 	for k := range *m {
