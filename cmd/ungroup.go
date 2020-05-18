@@ -72,10 +72,10 @@ func ungroup(fs afero.Fs, isClean bool) error {
 			if err != nil {
 				continue
 			}
-			defer s.Close()
 
 			items, err := s.Readdir(-1)
 			if err != nil {
+				s.Close()
 				continue
 			}
 
@@ -92,6 +92,7 @@ func ungroup(fs afero.Fs, isClean bool) error {
 
 				filech <- &fileItem{path: sub, name: file.Name()}
 			}
+			s.Close()
 		}
 	}()
 
