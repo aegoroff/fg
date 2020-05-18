@@ -95,28 +95,26 @@ func ungroup(fs afero.Fs, isClean bool) error {
 		}
 	}()
 
-	uniquePaths := make(StringKeyMap)
-	oldSubDirs := make(StringKeyMap)
+	uniquePaths := make(StringHashSet)
+	oldSubDirs := make(StringHashSet)
 
 	// rename files
 	for f := range filech {
 		oldFilePath := filepath.Join(f.path, f.name)
 		newFilePath := filepath.Join(basePath, f.name)
 
-		if !oldSubDirs.ContainsKey(f.path) {
-			oldSubDirs[f.path] = nil
-		}
+		oldSubDirs.Add(f.path)
 
-		if uniquePaths.ContainsKey(newFilePath) {
+		if uniquePaths.Contains(newFilePath) {
 			newFilePath = createNewPath(oldFilePath)
 		}
 		rename(fs, oldFilePath, newFilePath)
-		uniquePaths[newFilePath] = nil
+		uniquePaths.Add(newFilePath)
 	}
 
 	// cleanup old dirs
 	if isClean {
-		removeDirectories(fs, oldSubDirs.Keys())
+		removeDirectories(fs, oldSubDirs.Items())
 	}
 
 	return nil
