@@ -122,18 +122,27 @@ func ungroup(fs afero.Fs, isClean bool) error {
 
 	// cleanup old dirs
 	if isClean {
+		keys := make([]string, 0, len(oldSubDirs))
 		for k := range oldSubDirs {
-			if !isDirEmpty(fs, k) {
-				continue
-			}
-			err = fs.Remove(k)
-			if err != nil {
-				log.Printf("%v", err)
-			}
+			keys = append(keys, k)
 		}
+
+		removeDirectories(fs, keys)
 	}
 
 	return nil
+}
+
+func removeDirectories(fs afero.Fs, oldSubDirs []string) {
+	for _,k := range oldSubDirs {
+		if !isDirEmpty(fs, k) {
+			continue
+		}
+		err := fs.Remove(k)
+		if err != nil {
+			log.Printf("%v", err)
+		}
+	}
 }
 
 func isDirEmpty(fs afero.Fs, path string) bool {
