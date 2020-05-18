@@ -14,9 +14,6 @@ type fileItem struct {
 	name string
 }
 
-// Defines string keys map
-type StringKeyMap map[string]interface{}
-
 const removeEmptyParamName = "clean"
 
 // ungroupCmd represents the ungroup command
@@ -123,19 +120,6 @@ func ungroup(fs afero.Fs, isClean bool) error {
 	}
 
 	return nil
-}
-
-func (m *StringKeyMap) Keys() []string {
-	keys := make([]string, 0, len(*m))
-	for k := range *m {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-func (m *StringKeyMap) ContainsKey(key string) bool {
-	_, ok := (*m)[key]
-	return ok
 }
 
 func createNewPath(oldFilePath string) string {
