@@ -14,6 +14,9 @@ type fileItem struct {
 	name string
 }
 
+// Defines string keys map
+type StringKeyMap map[string]interface{}
+
 const removeEmptyParamName = "clean"
 
 // ungroupCmd represents the ungroup command
@@ -95,19 +98,19 @@ func ungroup(fs afero.Fs, isClean bool) error {
 		}
 	}()
 
-	uniquePaths := make(map[string]interface{})
-	oldSubDirs := make(map[string]interface{})
+	uniquePaths := make(StringKeyMap)
+	oldSubDirs := make(StringKeyMap)
 
 	// rename files
 	for f := range filech {
 		oldFilePath := filepath.Join(f.path, f.name)
 		newFilePath := filepath.Join(basePath, f.name)
 
-		if _, ok := oldSubDirs[f.path]; !ok {
+		if !uniquePaths.ContainsKey(f.path) {
 			oldSubDirs[f.path] = nil
 		}
 
-		if _, ok := uniquePaths[newFilePath]; ok {
+		if uniquePaths.ContainsKey(newFilePath) {
 			newFilePath = createNewPath(oldFilePath)
 		}
 		rename(fs, oldFilePath, newFilePath)
@@ -116,15 +119,23 @@ func ungroup(fs afero.Fs, isClean bool) error {
 
 	// cleanup old dirs
 	if isClean {
-		keys := make([]string, 0, len(oldSubDirs))
-		for k := range oldSubDirs {
-			keys = append(keys, k)
-		}
-
-		removeDirectories(fs, keys)
+		removeDirectories(fs, oldSubDirs.Keys())
 	}
 
 	return nil
+}
+
+func (m *StringKeyMap) Keys() []string {
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+func (m *StringKeyMap) ContainsKey(key string) bool {
+	_, ok := (*m)[key]
+	return ok
 }
 
 func createNewPath(oldFilePath string) string {
@@ -138,7 +149,7 @@ func createNewPath(oldFilePath string) string {
 }
 
 func removeDirectories(fs afero.Fs, oldSubDirs []string) {
-	for _,k := range oldSubDirs {
+	for _, k := range oldSubDirs {
 		if !isDirEmpty(fs, k) {
 			continue
 		}
