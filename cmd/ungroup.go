@@ -103,7 +103,7 @@ func ungroup(fs afero.Fs, isClean bool) error {
 		oldFilePath := filepath.Join(f.path, f.name)
 		newFilePath := filepath.Join(basePath, f.name)
 
-		if !uniquePaths.ContainsKey(f.path) {
+		if !oldSubDirs.ContainsKey(f.path) {
 			oldSubDirs[f.path] = nil
 		}
 
