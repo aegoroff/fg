@@ -108,13 +108,7 @@ func ungroup(fs afero.Fs, isClean bool) error {
 		}
 
 		if _, ok := uniquePaths[newFilePath]; ok {
-			d, f := filepath.Split(oldFilePath)
-			sep := string(os.PathSeparator)
-			baseDirParts := strings.Split(strings.Trim(basePath, sep), sep)
-			dirParts := strings.Split(strings.Trim(d, sep), sep)
-			newNameParts := append(dirParts[len(baseDirParts):], f)
-
-			newFilePath = filepath.Join(basePath, strings.Join(newNameParts, "-"))
+			newFilePath = createNewPath(oldFilePath)
 		}
 		rename(fs, oldFilePath, newFilePath)
 		uniquePaths[newFilePath] = nil
@@ -131,6 +125,16 @@ func ungroup(fs afero.Fs, isClean bool) error {
 	}
 
 	return nil
+}
+
+func createNewPath(oldFilePath string) string {
+	d, f := filepath.Split(oldFilePath)
+	sep := string(os.PathSeparator)
+	baseDirParts := strings.Split(strings.Trim(basePath, sep), sep)
+	dirParts := strings.Split(strings.Trim(d, sep), sep)
+	newNameParts := append(dirParts[len(baseDirParts):], f)
+
+	return filepath.Join(basePath, strings.Join(newNameParts, "-"))
 }
 
 func removeDirectories(fs afero.Fs, oldSubDirs []string) {
