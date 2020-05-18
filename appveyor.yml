@@ -25,7 +25,7 @@ install:
   - go get -u "github.com/stretchr/testify/assert"
   - go get -u "github.com/spf13/afero"
   - go get -u "github.com/spf13/cobra"
-  - go get -u "github.com/aegoroff/godatastruct"
+  - go get -u "github.com/aegoroff/godatastruct/collections"
 
 stack: go 1.13
 
