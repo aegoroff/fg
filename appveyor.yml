@@ -26,13 +26,14 @@ install:
   - go get -u "github.com/spf13/afero"
   - go get -u "github.com/spf13/cobra"
   - go get -u "github.com/aegoroff/godatastruct/collections"
+  - go get "github.com/mitchellh/gox"
 
-stack: go 1.13
+stack: go 1.14
 
 image: Visual Studio 2017
 
 build_script:
-  - go build -ldflags "-X fg/cmd.Version=%APPVEYOR_BUILD_VERSION%" fg
+  - gox -ldflags "-X fg/cmd.Version=%APPVEYOR_BUILD_VERSION%" fg
 
 test_script:
   - go test -coverprofile=coverage.txt -covermode=atomic fg/...
@@ -43,6 +44,15 @@ after_test:
       bash codecov.sh -f "coverage.txt" -t $env:CODECOV_TOKEN
 
 artifacts:
-  - path: fg.exe
+  - path: fg_windows_amd64.exe
     name: binary
-
+  - path: fg_windows_386.exe
+    name: binary
+  - path: fg_linux_amd64
+    name: binary
+  - path: fg_linux_386
+    name: binary
+  - path: fg_linux_arm
+    name: binary
+  - path: fg_darwin_amd64
+    name: binary
