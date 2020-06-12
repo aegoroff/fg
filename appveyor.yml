@@ -28,9 +28,9 @@ install:
   - go get -u "github.com/aegoroff/godatastruct/collections"
   - go get "github.com/mitchellh/gox"
 
-stack: go 1.14
+stack: go ^1.14
 
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 build_script:
   - gox -ldflags "-X fg/cmd.Version=%APPVEYOR_BUILD_VERSION%" fg
