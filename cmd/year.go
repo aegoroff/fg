@@ -6,18 +6,15 @@ import (
 	"os"
 )
 
-// yearCmd represents the year command
-var yearCmd = &cobra.Command{
-	Use:     "year",
-	Aliases: []string{"y"},
-	Short:   "Group files by year",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return group(appFileSystem, yearGrouper)
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(yearCmd)
+func newYear() *cobra.Command {
+	return &cobra.Command{
+		Use:     "year",
+		Aliases: []string{"y"},
+		Short:   "Group files by year",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return group(appFileSystem, yearGrouper)
+		},
+	}
 }
 
 func yearGrouper(file os.FileInfo) []string {

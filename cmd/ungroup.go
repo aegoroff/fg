@@ -17,24 +17,22 @@ type fileItem struct {
 
 const removeEmptyParamName = "clean"
 
-// ungroupCmd represents the ungroup command
-var ungroupCmd = &cobra.Command{
-	Use:     "ungroup",
-	Aliases: []string{"u"},
-	Short:   "Ungroups file in a directory i.e. copies all files from subdirectories into parent one",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		isClean, err := cmd.Flags().GetBool(removeEmptyParamName)
-		if err != nil {
-			return err
-		}
+func newUngroup() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "ungroup",
+		Aliases: []string{"u"},
+		Short:   "Ungroups file in a directory i.e. copies all files from subdirectories into parent one",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			isClean, err := cmd.Flags().GetBool(removeEmptyParamName)
+			if err != nil {
+				return err
+			}
 
-		return ungroup(appFileSystem, isClean)
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(ungroupCmd)
-	ungroupCmd.Flags().BoolP(removeEmptyParamName, "c", false, "Remove empty subdirectories after ungrouping")
+			return ungroup(appFileSystem, isClean)
+		},
+	}
+	cmd.Flags().BoolP(removeEmptyParamName, "c", false, "Remove empty subdirectories after ungrouping")
+	return cmd
 }
 
 func ungroup(fs afero.Fs, isClean bool) error {

@@ -6,18 +6,15 @@ import (
 	"os"
 )
 
-// monthCmd represents the month command
-var monthCmd = &cobra.Command{
-	Use:     "month",
-	Aliases: []string{"m"},
-	Short:   "Group files by month",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return group(appFileSystem, monthGrouper)
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(monthCmd)
+func newMonth() *cobra.Command {
+	return &cobra.Command{
+		Use:     "month",
+		Aliases: []string{"m"},
+		Short:   "Group files by month",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return group(appFileSystem, monthGrouper)
+		},
+	}
 }
 
 func monthGrouper(file os.FileInfo) []string {

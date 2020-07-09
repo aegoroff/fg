@@ -6,18 +6,15 @@ import (
 	"strings"
 )
 
-// extCmd represents the ext command
-var extCmd = &cobra.Command{
-	Use:     "ext",
-	Aliases: []string{"e"},
-	Short:   "Group files by file extension",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return group(appFileSystem, extGrouper)
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(extCmd)
+func newExt() *cobra.Command {
+	return &cobra.Command{
+		Use:     "ext",
+		Aliases: []string{"e"},
+		Short:   "Group files by file extension",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return group(appFileSystem, extGrouper)
+		},
+	}
 }
 
 func extGrouper(file os.FileInfo) []string {

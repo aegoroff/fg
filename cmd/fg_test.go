@@ -162,8 +162,7 @@ func TestFg_GroupingTests_FilesMoved(t *testing.T) {
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{test.option, "-p", dir, "-i", ""})
-		rootCmd.Execute()
+		Execute(test.option, "-p", dir, "-i", "")
 
 		// Assert
 		_, err := memfs.Stat(dir + test.sub1 + test.file1)
@@ -218,8 +217,7 @@ func TestFg_UngroupingTests_FilesMoved(t *testing.T) {
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{test.option, "-p", dir, "-i", ""})
-		rootCmd.Execute()
+		Execute(test.option, "-p", dir, "-i", "")
 
 		// Assert
 		_, err := memfs.Stat(dir + test.sub1 + test.file1)
@@ -273,8 +271,7 @@ func TestFg_UngroupingTestAndClean_FilesMovedOldDirsRemoved(t *testing.T) {
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{"u", "-p", dir, "-c", "-i", ""})
-		rootCmd.Execute()
+		Execute("u", "-p", dir, "-c", "-i", "")
 
 		// Assert
 		_, err := memfs.Stat(dir + test.sub1 + test.file1)
@@ -322,8 +319,7 @@ func TestFg_UngroupingTestWithFiltering_CountMovedFilesAsSpecified(t *testing.T)
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{"u", "-p", dir, "-i", test.include})
-		rootCmd.Execute()
+		Execute("u", "-p", dir, "-i", test.include)
 
 		// Assert
 		files := getFileNamesInDir(memfs, dir)
@@ -356,8 +352,7 @@ func TestFg_UngroupingTestWithFilteringAndCleaning_CountMovedFilesAsSpecifiedNot
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{"u", "-p", dir, "-i", test.include, "-c"})
-		rootCmd.Execute()
+		Execute("u", "-p", dir, "-i", test.include, "-c")
 
 		// Assert
 		files := getFileNamesInDir(memfs, dir)
@@ -385,8 +380,7 @@ func TestFg_UngroupingTestReadOnlyTarget_CountMovedFilesAsSpecified(t *testing.T
 	appFileSystem = afero.NewReadOnlyFs(memfs)
 
 	// Act
-	rootCmd.SetArgs([]string{"u", "-p", dir, "-c", "-i", ""})
-	rootCmd.Execute()
+	Execute("u", "-p", dir, "-c", "-i", "")
 
 	// Assert
 	files := getFileNamesInDir(memfs, dir)
@@ -415,8 +409,7 @@ func TestFg_UngroupingTestSubdirWithoutFiles_CountMovedFilesAsSpecifiedSubdirWit
 	appFileSystem = memfs
 
 	// Act
-	rootCmd.SetArgs([]string{"u", "-p", dir, "-c", "-i", ""})
-	rootCmd.Execute()
+	Execute("u", "-p", dir, "-c", "-i", "")
 
 	// Assert
 	files := getFileNamesInDir(memfs, dir)
@@ -446,8 +439,7 @@ func TestFg_GroupingTestReadOnlyTarget_CountNotMovedFilesAsSpecified(t *testing.
 	appFileSystem = afero.NewReadOnlyFs(memfs)
 
 	// Act
-	rootCmd.SetArgs([]string{"e", "-p", dir, "-i", ""})
-	rootCmd.Execute()
+	Execute("e", "-p", dir, "-i", "")
 
 	// Assert
 	files := getFileNamesInDir(memfs, dir)
@@ -473,8 +465,7 @@ func TestFg_GroupingTestFirstNFileNameShort_CountMovedFilesAsSpecifiedTargetPath
 	appFileSystem = memfs
 
 	// Act
-	rootCmd.SetArgs([]string{"fn", "-p", dir, "-i", "", "-n", "5"})
-	rootCmd.Execute()
+	Execute("fn", "-p", dir, "-i", "", "-n", "5")
 
 	// Assert
 	files := getFileNamesInDir(memfs, dir)
@@ -511,8 +502,7 @@ func TestFg_GroupingTestFirstNFileInvalidNum_FilesNotMoved(t *testing.T) {
 		appFileSystem = memfs
 
 		// Act
-		rootCmd.SetArgs([]string{"fn", "-p", dir, "-i", "", "-n", test.num})
-		rootCmd.Execute()
+		Execute("fn", "-p", dir, "-i", "", "-n", test.num)
 
 		// Assert
 		files := getFileNamesInDir(memfs, dir)

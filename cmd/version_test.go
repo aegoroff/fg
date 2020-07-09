@@ -23,8 +23,7 @@ func Test_Version(t *testing.T) {
 		appWriter = buf
 
 		// Act
-		rootCmd.SetArgs([]string{test.cmd})
-		rootCmd.Execute()
+		Execute(test.cmd)
 
 		// Assert
 		ass.Equal(fmt.Sprintf("fg v%s\n", Version), buf.String())

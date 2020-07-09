@@ -6,18 +6,15 @@ import (
 	"os"
 )
 
-// dayCmd represents the day command
-var dayCmd = &cobra.Command{
-	Use:     "day",
-	Aliases: []string{"d"},
-	Short:   "Group files by day",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return group(appFileSystem, dayGrouper)
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(dayCmd)
+func newDay() *cobra.Command {
+	return &cobra.Command{
+		Use:     "day",
+		Aliases: []string{"d"},
+		Short:   "Group files by day",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return group(appFileSystem, dayGrouper)
+		},
+	}
 }
 
 func dayGrouper(file os.FileInfo) []string {
