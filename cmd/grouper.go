@@ -8,18 +8,28 @@ import (
 )
 
 type grouper struct {
-	fs       afero.Fs
+	*renamer
 	basePath string
+	grp      Grouping
 }
 
-func newGrouper(fs afero.Fs, basePath string) *grouper {
+type renamer struct {
+	fs afero.Fs
+}
+
+func newRenamer(fs afero.Fs) *renamer {
+	return &renamer{fs: fs}
+}
+
+func newGrouper(fs afero.Fs, basePath string, grouping Grouping) *grouper {
 	return &grouper{
-		fs:       fs,
+		renamer:  newRenamer(fs),
 		basePath: basePath,
+		grp:      grouping,
 	}
 }
 
-func (g *grouper) group(grouper Grouping, flt *filter) error {
+func (g *grouper) group(flt *filter) error {
 	f, err := g.fs.Open(basePath)
 	if err != nil {
 		return err
@@ -43,14 +53,14 @@ func (g *grouper) group(grouper Grouping, flt *filter) error {
 		}
 
 		// Only files grouped
-		g.groupFile(file, grouper)
+		g.groupFile(file)
 	}
 	return nil
 }
 
-func (g *grouper) groupFile(file os.FileInfo, grouper Grouping) {
+func (g *grouper) groupFile(file os.FileInfo) {
 	// Group key will be subdirectory (of base dir) name
-	subdirs := grouper(file)
+	subdirs := g.grp(file)
 
 	parts := []string{g.basePath}
 	parts = append(parts, subdirs...)
@@ -71,8 +81,8 @@ func (g *grouper) groupFile(file os.FileInfo, grouper Grouping) {
 	g.rename(oldFilePath, newFilePath)
 }
 
-func (g *grouper) rename(oldFilePath string, newFilePath string) {
-	if err := g.fs.Rename(oldFilePath, newFilePath); err != nil {
+func (r *renamer) rename(oldFilePath string, newFilePath string) {
+	if err := r.fs.Rename(oldFilePath, newFilePath); err != nil {
 		log.Printf("%v", err)
 	} else {
 		log.Printf("File %s moved to %s", oldFilePath, newFilePath)

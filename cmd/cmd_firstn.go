@@ -25,11 +25,11 @@ func firstnFunc(cmd *cobra.Command, _ []string) error {
 	}
 
 	flt := newFilter(include, exclude)
-	g := newGrouper(appFileSystem, basePath)
-
-	return g.group(func(info os.FileInfo) []string {
+	g := newGrouper(appFileSystem, basePath, func(info os.FileInfo) []string {
 		return firstGrouper(num, info)
-	}, flt)
+	})
+
+	return g.group(flt)
 }
 
 func firstGrouper(num int, file os.FileInfo) []string {

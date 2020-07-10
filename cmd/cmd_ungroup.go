@@ -98,7 +98,7 @@ func ungroup(fs afero.Fs, isClean bool) error {
 	uniquePaths := make(collections.StringHashSet)
 	oldSubDirs := make(collections.StringHashSet)
 
-	g := newGrouper(fs, basePath)
+	r := newRenamer(fs)
 	// rename files
 	for f := range filech {
 		oldFilePath := filepath.Join(f.path, f.name)
@@ -109,7 +109,7 @@ func ungroup(fs afero.Fs, isClean bool) error {
 		if uniquePaths.Contains(newFilePath) {
 			newFilePath = createNewPath(oldFilePath)
 		}
-		g.rename(oldFilePath, newFilePath)
+		r.rename(oldFilePath, newFilePath)
 		uniquePaths.Add(newFilePath)
 	}
 
