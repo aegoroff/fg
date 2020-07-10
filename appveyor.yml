@@ -41,7 +41,7 @@ test_script:
 after_test:
   - ps: |
       Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-      codecov.sh -f "coverage.txt" -t $env:CODECOV_TOKEN
+      ./codecov.sh -f "coverage.txt" -t $env:CODECOV_TOKEN
 
 artifacts:
   - path: fg_windows_amd64.exe
