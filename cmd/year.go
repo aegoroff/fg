@@ -7,14 +7,11 @@ import (
 )
 
 func newYear() *cobra.Command {
-	return &cobra.Command{
-		Use:     "year",
-		Aliases: []string{"y"},
-		Short:   "Group files by year",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return group(appFileSystem, yearGrouper)
-		},
-	}
+	return newCmd("year", "y", "Group files by year", yearFunc)
+}
+
+func yearFunc(_ *cobra.Command, _ []string) error {
+	return group(appFileSystem, yearGrouper)
 }
 
 func yearGrouper(file os.FileInfo) []string {

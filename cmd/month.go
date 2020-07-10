@@ -7,14 +7,11 @@ import (
 )
 
 func newMonth() *cobra.Command {
-	return &cobra.Command{
-		Use:     "month",
-		Aliases: []string{"m"},
-		Short:   "Group files by month",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return group(appFileSystem, monthGrouper)
-		},
-	}
+	return newCmd("month", "m", "Group files by month", monthFunc)
+}
+
+func monthFunc(_ *cobra.Command, _ []string) error {
+	return group(appFileSystem, monthGrouper)
 }
 
 func monthGrouper(file os.FileInfo) []string {

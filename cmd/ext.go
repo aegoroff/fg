@@ -7,14 +7,11 @@ import (
 )
 
 func newExt() *cobra.Command {
-	return &cobra.Command{
-		Use:     "ext",
-		Aliases: []string{"e"},
-		Short:   "Group files by file extension",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return group(appFileSystem, extGrouper)
-		},
-	}
+	return newCmd("ext", "e", "Group files by file extension", extFunc)
+}
+
+func extFunc(_ *cobra.Command, _ []string) error {
+	return group(appFileSystem, extGrouper)
 }
 
 func extGrouper(file os.FileInfo) []string {

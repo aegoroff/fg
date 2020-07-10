@@ -7,14 +7,11 @@ import (
 )
 
 func newDay() *cobra.Command {
-	return &cobra.Command{
-		Use:     "day",
-		Aliases: []string{"d"},
-		Short:   "Group files by day",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return group(appFileSystem, dayGrouper)
-		},
-	}
+	return newCmd("day", "d", "Group files by day", dayFunc)
+}
+
+func dayFunc(_ *cobra.Command, _ []string) error {
+	return group(appFileSystem, dayGrouper)
 }
 
 func dayGrouper(file os.FileInfo) []string {
