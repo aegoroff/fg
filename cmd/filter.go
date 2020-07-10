@@ -45,7 +45,7 @@ func newFilter(include string, exclude string) *filter {
 	}
 }
 
-func (f *filter) filterFile(file string) bool {
+func (f *filter) skip(file string) bool {
 	return !f.incl.match(file) || f.excl.match(file)
 }
 

@@ -25,7 +25,7 @@ func TestFilterFile_OnlyOneOptionSetFileNotMatchPattern_ReturnFalse(t *testing.T
 		f := newFilter(test.include, test.exclude)
 
 		// Act
-		result := f.filterFile(fgTestFileName)
+		result := f.skip(fgTestFileName)
 
 		// Assert
 		ass.Falsef(result, "File name %s should not be filtered but it was", fgTestFileName)
@@ -46,7 +46,7 @@ func TestFilterFile_OnlyOneOptionSetAndItFiltersFile_ReturnTrue(t *testing.T) {
 		f := newFilter(test.include, test.exclude)
 
 		// Act
-		result := f.filterFile(fgTestFileName)
+		result := f.skip(fgTestFileName)
 
 		// Assert
 		ass.Truef(result, "File name %s should be filtered but it wasn't", fgTestFileName)
@@ -61,7 +61,7 @@ func TestFilterFile_BothPatternsEmpty_ReturnFalse(t *testing.T) {
 	f := newFilter(include, exclude)
 
 	// Act
-	result := f.filterFile(fgTestFileName)
+	result := f.skip(fgTestFileName)
 
 	// Assert
 	ass.Falsef(result, "File name %s should not filtered because patterns not set but it was", fgTestFileName)
@@ -75,7 +75,7 @@ func TestFilterFile_BothPatternsSetMatchOnlyInclude_ReturnFalse(t *testing.T) {
 	f := newFilter(include, exclude)
 
 	// Act
-	result := f.filterFile(fgTestFileName)
+	result := f.skip(fgTestFileName)
 
 	// Assert
 	ass.Falsef(result, "File name %s should not filtered by %s but it was", fgTestFileName, exclude)
@@ -89,7 +89,7 @@ func TestFilterFile_BothPatternsSetMatchBoth_ReturnTrue(t *testing.T) {
 	f := newFilter(include, exclude)
 
 	// Act
-	result := f.filterFile(fgTestFileName)
+	result := f.skip(fgTestFileName)
 
 	// Assert
 	ass.Truef(result, "File name %s should be filtered by %s but it wasn't", fgTestFileName, exclude)
@@ -103,7 +103,7 @@ func TestFilterFile_BothPatternsSetMatchOnlyExclude_ReturnTrue(t *testing.T) {
 	f := newFilter(include, exclude)
 
 	// Act
-	result := f.filterFile(fgTestFileName)
+	result := f.skip(fgTestFileName)
 
 	// Assert
 	ass.Truef(result, "File name %s should be filtered by %s but it wasn't", fgTestFileName, exclude)
@@ -117,7 +117,7 @@ func TestFilterFile_BothPatternsSetMatchNoneOfThem_ReturnTrue(t *testing.T) {
 	f := newFilter(include, exclude)
 
 	// Act
-	result := f.filterFile(fgTestFileName)
+	result := f.skip(fgTestFileName)
 
 	// Assert
 	ass.Truef(result, "File name %s should be filtered by include: %s but it wasn't", fgTestFileName, include)

@@ -84,7 +84,7 @@ func ungroup(c conf, isClean bool) error {
 				}
 
 				// skip files if necessary
-				if flt.filterFile(file.Name()) {
+				if flt.skip(file.Name()) {
 					continue
 				}
 
