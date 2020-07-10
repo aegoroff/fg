@@ -39,7 +39,7 @@ func init() {
 }
 
 // Execute starts package running
-func Execute(args ...string) {
+func Execute(args ...string) error {
 	rootCmd := newRoot()
 
 	if args != nil && len(args) > 0 {
@@ -58,8 +58,10 @@ func Execute(args ...string) {
 	rootCmd.AddCommand(newVersion())
 	rootCmd.AddCommand(newYear())
 	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
+		return err
 	}
+
+	return nil
 }
 
 func group(fs afero.Fs, grouper Grouping) error {
