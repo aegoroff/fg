@@ -13,10 +13,10 @@ func newCmd(use string, alias string, short string, f cmdFunc) *cobra.Command {
 	}
 }
 
-func newSimpleGroupingCmd(use string, alias string, short string, g grouping) *cobra.Command {
+func newSimpleGroupingCmd(c conf, use string, alias string, short string, g grouping) *cobra.Command {
 	return newCmd(use, alias, short, func(_ *cobra.Command, _ []string) error {
-		flt := newFilter(include, exclude)
-		grp := newGrouper(appFileSystem, basePath, g)
+		flt := newFilter(c.include(), c.exclude())
+		grp := newGrouper(c.fs(), c.base(), g)
 
 		return grp.group(flt)
 	})

@@ -17,24 +17,23 @@ type fileItem struct {
 
 const removeEmptyParamName = "clean"
 
-func newUngroup() *cobra.Command {
-	cmd := newCmd("ungroup", "u", "Ungroups file in a directory i.e. copies all files from subdirectories into parent one", ungroupFunc)
+func newUngroup(c conf) *cobra.Command {
+	short := "Ungroups file in a directory i.e. copies all files from subdirectories into parent one"
+	cmd := newCmd("ungroup", "u", short, func(cmd *cobra.Command, _ []string) error {
+		isClean, err := cmd.Flags().GetBool(removeEmptyParamName)
+		if err != nil {
+			return err
+		}
+
+		return ungroup(c, isClean)
+	})
 
 	cmd.Flags().BoolP(removeEmptyParamName, "c", false, "Remove empty subdirectories after ungrouping")
 	return cmd
 }
 
-func ungroupFunc(cmd *cobra.Command, _ []string) error {
-	isClean, err := cmd.Flags().GetBool(removeEmptyParamName)
-	if err != nil {
-		return err
-	}
-
-	return ungroup(appFileSystem, isClean)
-}
-
-func ungroup(fs afero.Fs, isClean bool) error {
-	base, err := fs.Open(basePath)
+func ungroup(c conf, isClean bool) error {
+	base, err := c.fs().Open(c.base())
 	if err != nil {
 		return err
 	}
@@ -54,20 +53,20 @@ func ungroup(fs afero.Fs, isClean bool) error {
 		defer base.Close()
 		for _, item := range items {
 			if item.IsDir() {
-				subch <- filepath.Join(basePath, item.Name())
+				subch <- filepath.Join(c.base(), item.Name())
 			}
 		}
 	}()
 
 	filech := make(chan *fileItem, 16)
 
-	flt := newFilter(include, exclude)
+	flt := newFilter(c.include(), c.exclude())
 
 	// enumerate files in all subdirs
 	go func() {
 		defer close(filech)
 		for sub := range subch {
-			s, err := fs.Open(sub)
+			s, err := c.fs().Open(sub)
 			if err != nil {
 				continue
 			}
@@ -98,16 +97,16 @@ func ungroup(fs afero.Fs, isClean bool) error {
 	uniquePaths := make(collections.StringHashSet)
 	oldSubDirs := make(collections.StringHashSet)
 
-	r := newRenamer(fs)
+	r := newRenamer(c.fs())
 	// rename files
 	for f := range filech {
 		oldFilePath := filepath.Join(f.path, f.name)
-		newFilePath := filepath.Join(basePath, f.name)
+		newFilePath := filepath.Join(c.base(), f.name)
 
 		oldSubDirs.Add(f.path)
 
 		if uniquePaths.Contains(newFilePath) {
-			newFilePath = createNewPath(oldFilePath)
+			newFilePath = createNewPath(c.base(), oldFilePath)
 		}
 		r.rename(oldFilePath, newFilePath)
 		uniquePaths.Add(newFilePath)
@@ -115,13 +114,13 @@ func ungroup(fs afero.Fs, isClean bool) error {
 
 	// cleanup old dirs
 	if isClean {
-		removeDirectories(fs, oldSubDirs.Items())
+		removeDirectories(c.fs(), oldSubDirs.Items())
 	}
 
 	return nil
 }
 
-func createNewPath(oldFilePath string) string {
+func createNewPath(basePath, oldFilePath string) string {
 	d, f := filepath.Split(oldFilePath)
 	sep := string(os.PathSeparator)
 	baseDirParts := strings.Split(strings.Trim(basePath, sep), sep)

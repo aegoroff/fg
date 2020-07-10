@@ -8,28 +8,26 @@ import (
 
 const numberParamName = "number"
 
-func newFirstn() *cobra.Command {
-	cmd := newCmd("firstn", "fn", "Group files by first N letters of a name. By default 3", firstnFunc)
+func newFirstn(c conf) *cobra.Command {
+	cmd := newCmd("firstn", "fn", "Group files by first N letters of a name. By default 3", func(cmd *cobra.Command, _ []string) error {
+		num, err := cmd.Flags().GetInt(numberParamName)
+		if err != nil {
+			return err
+		}
+		if num <= 0 {
+			return errors.New("number must be positive")
+		}
+
+		flt := newFilter(c.include(), c.exclude())
+		g := newGrouper(c.fs(), c.base(), func(info os.FileInfo) []string {
+			return firstGrouper(num, info)
+		})
+
+		return g.group(flt)
+	})
 
 	cmd.Flags().IntP(numberParamName, "n", 3, "The number of first letters that used to group files")
 	return cmd
-}
-
-func firstnFunc(cmd *cobra.Command, _ []string) error {
-	num, err := cmd.Flags().GetInt(numberParamName)
-	if err != nil {
-		return err
-	}
-	if num <= 0 {
-		return errors.New("number must be positive")
-	}
-
-	flt := newFilter(include, exclude)
-	g := newGrouper(appFileSystem, basePath, func(info os.FileInfo) []string {
-		return firstGrouper(num, info)
-	})
-
-	return g.group(flt)
 }
 
 func firstGrouper(num int, file os.FileInfo) []string {

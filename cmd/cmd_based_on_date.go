@@ -6,16 +6,16 @@ import (
 	"os"
 )
 
-func newDay() *cobra.Command {
-	return newSimpleGroupingCmd("day", "d", "Group files by day", dayGrouper)
+func newDay(c conf) *cobra.Command {
+	return newSimpleGroupingCmd(c, "day", "d", "Group files by day", dayGrouper)
 }
 
-func newMonth() *cobra.Command {
-	return newSimpleGroupingCmd("month", "m", "Group files by month", monthGrouper)
+func newMonth(c conf) *cobra.Command {
+	return newSimpleGroupingCmd(c, "month", "m", "Group files by month", monthGrouper)
 }
 
-func newYear() *cobra.Command {
-	return newSimpleGroupingCmd("year", "y", "Group files by year", yearGrouper)
+func newYear(c conf) *cobra.Command {
+	return newSimpleGroupingCmd(c, "year", "y", "Group files by year", yearGrouper)
 }
 
 func dayGrouper(file os.FileInfo) []string {

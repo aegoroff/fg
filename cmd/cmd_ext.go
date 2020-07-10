@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-func newExt() *cobra.Command {
-	return newSimpleGroupingCmd("ext", "e", "Group files by file extension", extGrouper)
+func newExt(c conf) *cobra.Command {
+	return newSimpleGroupingCmd(c, "ext", "e", "Group files by file extension", extGrouper)
 }
 
 func extGrouper(file os.FileInfo) []string {

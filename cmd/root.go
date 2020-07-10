@@ -10,12 +10,6 @@ import (
 var appFileSystem afero.Fs
 var appWriter io.Writer
 
-const pathParamName = "path"
-
-var basePath string
-var include string
-var exclude string
-
 func newRoot() *cobra.Command {
 	return &cobra.Command{
 		Use:   "fg",
@@ -42,17 +36,19 @@ func Execute(args ...string) error {
 		rootCmd.SetArgs(args)
 	}
 
-	rootCmd.PersistentFlags().StringVarP(&basePath, pathParamName, "p", "", "REQUIRED. Directory path whose files will be grouped by folders.")
-	rootCmd.PersistentFlags().StringVarP(&include, "include", "i", "", "Only files whose names match the pattern specified by the option are grouped.")
-	rootCmd.PersistentFlags().StringVarP(&exclude, "exclude", "e", "", "Exclude files whose names match pattern specified by the option from grouping.")
+	conf := newFgConf(appFileSystem)
 
-	rootCmd.AddCommand(newDay())
-	rootCmd.AddCommand(newExt())
-	rootCmd.AddCommand(newFirstn())
-	rootCmd.AddCommand(newMonth())
-	rootCmd.AddCommand(newUngroup())
+	rootCmd.PersistentFlags().StringVarP(&conf.bp, "path", "p", "", "REQUIRED. Directory path whose files will be grouped by folders.")
+	rootCmd.PersistentFlags().StringVarP(&conf.incl, "include", "i", "", "Only files whose names match the pattern specified by the option are grouped.")
+	rootCmd.PersistentFlags().StringVarP(&conf.excl, "exclude", "e", "", "Exclude files whose names match pattern specified by the option from grouping.")
+
+	rootCmd.AddCommand(newDay(conf))
+	rootCmd.AddCommand(newMonth(conf))
+	rootCmd.AddCommand(newYear(conf))
+	rootCmd.AddCommand(newExt(conf))
+	rootCmd.AddCommand(newFirstn(conf))
+	rootCmd.AddCommand(newUngroup(conf))
 	rootCmd.AddCommand(newVersion())
-	rootCmd.AddCommand(newYear())
 
 	return rootCmd.Execute()
 }

@@ -32,7 +32,7 @@ func newGrouper(fs afero.Fs, basePath string, grouping grouping) *grouper {
 }
 
 func (g *grouper) group(flt *filter) error {
-	f, err := g.fs.Open(basePath)
+	f, err := g.fs.Open(g.basePath)
 	if err != nil {
 		return err
 	}
