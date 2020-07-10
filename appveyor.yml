@@ -39,7 +39,7 @@ test_script:
   - go test -coverprofile=coverage.txt -covermode=atomic fg/...
 
 after_test:
-  - ps: Invoke-WebRequest -Uri 'https://codecov.io/bash' | bash -f "coverage.txt" -t $env:CODECOV_TOKEN
+  - ps: Invoke-WebRequest -Uri 'https://codecov.io/bash' | bash -s -- -c -F aFlag -f "coverage.txt" -t $env:CODECOV_TOKEN
 
 artifacts:
   - path: fg_windows_amd64.exe
