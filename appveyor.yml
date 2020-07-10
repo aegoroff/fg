@@ -33,15 +33,15 @@ stack: go ^1.14
 image: Visual Studio 2019
 
 build_script:
-  - gox -ldflags "-X fg/cmd.Version=%APPVEYOR_BUILD_VERSION%" fg
+  - gox -osarch="linux/amd64 linux/arm linux/arm64 linux/386 darwin/amd64 windows/amd64 windows/386" -ldflags "-X fg/cmd.Version=%APPVEYOR_BUILD_VERSION%" fg
 
 test_script:
   - go test -coverprofile=coverage.txt -covermode=atomic fg/...
 
-after_test:
-  - ps: |
-      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-      bash codecov.sh -f "coverage.txt" -t $env:CODECOV_TOKEN
+#after_test:
+#  - ps: |
+#      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+#      bash codecov.sh -f "coverage.txt" -t $env:CODECOV_TOKEN
 
 artifacts:
   - path: fg_windows_amd64.exe
@@ -53,6 +53,8 @@ artifacts:
   - path: fg_linux_386
     name: binary
   - path: fg_linux_arm
+    name: binary
+  - path: fg_linux_arm64
     name: binary
   - path: fg_darwin_amd64
     name: binary
