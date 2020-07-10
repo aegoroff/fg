@@ -7,10 +7,12 @@ import (
 	"path/filepath"
 )
 
+type grouping func(os.FileInfo) []string
+
 type grouper struct {
 	*renamer
 	basePath string
-	grp      Grouping
+	grp      grouping
 }
 
 type renamer struct {
@@ -21,7 +23,7 @@ func newRenamer(fs afero.Fs) *renamer {
 	return &renamer{fs: fs}
 }
 
-func newGrouper(fs afero.Fs, basePath string, grouping Grouping) *grouper {
+func newGrouper(fs afero.Fs, basePath string, grouping grouping) *grouper {
 	return &grouper{
 		renamer:  newRenamer(fs),
 		basePath: basePath,

@@ -7,10 +7,7 @@ import (
 	"os"
 )
 
-// Grouping function
-type Grouping func(os.FileInfo) []string
-
-var appFileSystem = afero.NewOsFs()
+var appFileSystem afero.Fs
 var appWriter io.Writer
 
 const pathParamName = "path"
@@ -34,6 +31,7 @@ func newRoot() *cobra.Command {
 func init() {
 	cobra.MousetrapHelpText = ""
 	appWriter = os.Stdout
+	appFileSystem = afero.NewOsFs()
 }
 
 // Execute starts package running
