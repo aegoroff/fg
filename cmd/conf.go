@@ -3,7 +3,7 @@ package cmd
 import "github.com/spf13/afero"
 
 type conf interface {
-	base() string
+	root() string
 	include() string
 	exclude() string
 	fs() afero.Fs
@@ -22,7 +22,7 @@ func newFgConf(fs afero.Fs) *fgConf {
 	}
 }
 
-func (f *fgConf) base() string { return f.bpath }
+func (f *fgConf) root() string { return f.bpath }
 
 func (f *fgConf) include() string { return f.incl }
 

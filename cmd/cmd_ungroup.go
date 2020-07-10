@@ -33,7 +33,7 @@ func newUngroup(c conf) *cobra.Command {
 }
 
 func ungroup(c conf, isClean bool) error {
-	base, err := c.fs().Open(c.base())
+	base, err := c.fs().Open(c.root())
 	if err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func ungroup(c conf, isClean bool) error {
 		defer base.Close()
 		for _, item := range items {
 			if item.IsDir() {
-				subch <- filepath.Join(c.base(), item.Name())
+				subch <- filepath.Join(c.root(), item.Name())
 			}
 		}
 	}()
@@ -101,12 +101,12 @@ func ungroup(c conf, isClean bool) error {
 	// rename files
 	for f := range filech {
 		oldFilePath := filepath.Join(f.path, f.name)
-		newFilePath := filepath.Join(c.base(), f.name)
+		newFilePath := filepath.Join(c.root(), f.name)
 
 		oldSubDirs.Add(f.path)
 
 		if uniquePaths.Contains(newFilePath) {
-			newFilePath = createNewPath(c.base(), oldFilePath)
+			newFilePath = createNewPath(c.root(), oldFilePath)
 		}
 		r.rename(oldFilePath, newFilePath)
 		uniquePaths.Add(newFilePath)

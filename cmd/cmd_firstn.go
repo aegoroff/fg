@@ -20,7 +20,7 @@ func newFirstn(c conf) *cobra.Command {
 		}
 
 		flt := newFilter(c.include(), c.exclude())
-		g := newGrouper(c.fs(), c.base(), func(info os.FileInfo) []string {
+		g := newGrouper(c.fs(), c.root(), func(info os.FileInfo) []string {
 			return firstGrouper(num, info)
 		})
 
