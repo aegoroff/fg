@@ -42,8 +42,7 @@ after_test:
   - ps: |
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
       Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-      $cmd = 'bash codecov.sh -f "coverage.txt" -t $env:CODECOV_TOKEN'
-      "$cmd &" exit 0
+      bash codecov.sh -f "coverage.txt" -t $env:CODECOV_TOKEN "&" exit 0
 
 artifacts:
   - path: fg_windows_amd64.exe
