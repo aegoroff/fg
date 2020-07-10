@@ -7,15 +7,33 @@ import (
 )
 
 func newDay(c conf) *cobra.Command {
-	return newSimpleGroupingCmd(c, "day", "d", "Group files by day", dayGrouper)
+	cmd := &simple{
+		use:   "day",
+		a:     "d",
+		descr: "Group files by day",
+		g:     dayGrouper,
+	}
+	return newSimpleGroupingCmd(c, cmd)
 }
 
 func newMonth(c conf) *cobra.Command {
-	return newSimpleGroupingCmd(c, "month", "m", "Group files by month", monthGrouper)
+	cmd := &simple{
+		use:   "month",
+		a:     "m",
+		descr: "Group files by month",
+		g:     monthGrouper,
+	}
+	return newSimpleGroupingCmd(c, cmd)
 }
 
 func newYear(c conf) *cobra.Command {
-	return newSimpleGroupingCmd(c, "year", "y", "Group files by year", yearGrouper)
+	cmd := &simple{
+		use:   "year",
+		a:     "y",
+		descr: "Group files by year",
+		g:     yearGrouper,
+	}
+	return newSimpleGroupingCmd(c, cmd)
 }
 
 func dayGrouper(file os.FileInfo) []string {
