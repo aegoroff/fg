@@ -10,10 +10,10 @@ type conf interface {
 }
 
 type fgConf struct {
-	bp   string
-	incl string
-	excl string
-	afs  afero.Fs
+	bpath string
+	incl  string
+	excl  string
+	afs   afero.Fs
 }
 
 func newFgConf(fs afero.Fs) *fgConf {
@@ -22,7 +22,7 @@ func newFgConf(fs afero.Fs) *fgConf {
 	}
 }
 
-func (f *fgConf) base() string { return f.bp }
+func (f *fgConf) base() string { return f.bpath }
 
 func (f *fgConf) include() string { return f.incl }
 

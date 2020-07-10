@@ -38,7 +38,7 @@ func Execute(args ...string) error {
 
 	conf := newFgConf(appFileSystem)
 
-	rootCmd.PersistentFlags().StringVarP(&conf.bp, "path", "p", "", "REQUIRED. Directory path whose files will be grouped by folders.")
+	rootCmd.PersistentFlags().StringVarP(&conf.bpath, "path", "p", "", "REQUIRED. Directory path whose files will be grouped by folders.")
 	rootCmd.PersistentFlags().StringVarP(&conf.incl, "include", "i", "", "Only files whose names match the pattern specified by the option are grouped.")
 	rootCmd.PersistentFlags().StringVarP(&conf.excl, "exclude", "e", "", "Exclude files whose names match pattern specified by the option from grouping.")
 
