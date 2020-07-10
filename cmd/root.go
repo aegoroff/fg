@@ -55,9 +55,6 @@ func Execute(args ...string) error {
 	rootCmd.AddCommand(newUngroup())
 	rootCmd.AddCommand(newVersion())
 	rootCmd.AddCommand(newYear())
-	if err := rootCmd.Execute(); err != nil {
-		return err
-	}
 
-	return nil
+	return rootCmd.Execute()
 }
