@@ -8,32 +8,18 @@ import (
 )
 
 type grouper struct {
-	*filter
 	fs       afero.Fs
 	basePath string
 }
 
-type filter struct {
-	include string
-	exclude string
-}
-
-func newFilter(include string, exclude string) *filter {
-	return &filter{
-		include: include,
-		exclude: exclude,
-	}
-}
-
-func newGrouper(fs afero.Fs, basePath string, flt *filter) *grouper {
+func newGrouper(fs afero.Fs, basePath string) *grouper {
 	return &grouper{
-		filter:   flt,
 		fs:       fs,
 		basePath: basePath,
 	}
 }
 
-func (g *grouper) group(grouper Grouping) error {
+func (g *grouper) group(grouper Grouping, flt *filter) error {
 	f, err := g.fs.Open(basePath)
 	if err != nil {
 		return err
@@ -52,7 +38,7 @@ func (g *grouper) group(grouper Grouping) error {
 		}
 
 		// skip files if necessary
-		if g.filterFile(file.Name()) {
+		if flt.filterFile(file.Name()) {
 			continue
 		}
 
@@ -60,13 +46,6 @@ func (g *grouper) group(grouper Grouping) error {
 		g.groupFile(file, grouper)
 	}
 	return nil
-}
-
-func (f *filter) filterFile(file string) bool {
-	isInclude := matchPathPattern(f.include, file, true)
-	isExclude := matchPathPattern(f.exclude, file, false)
-
-	return !isInclude || isExclude
 }
 
 func (g *grouper) groupFile(file os.FileInfo, grouper Grouping) {
@@ -98,16 +77,4 @@ func (g *grouper) rename(oldFilePath string, newFilePath string) {
 	} else {
 		log.Printf("File %s moved to %s", oldFilePath, newFilePath)
 	}
-}
-
-// Returns resultIfError in case of empty pattern or pattern parsing error
-func matchPathPattern(pattern string, file string, resultIfError bool) bool {
-	result, err := filepath.Match(pattern, file)
-	if err != nil {
-		log.Printf("%v", err)
-		result = resultIfError
-	} else if len(pattern) == 0 {
-		result = resultIfError
-	}
-	return result
 }
