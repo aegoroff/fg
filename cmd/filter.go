@@ -6,22 +6,47 @@ import (
 )
 
 type filter struct {
-	include string
-	exclude string
+	incl matcher
+	excl matcher
+}
+
+type matcher interface {
+	match(file string) bool
+}
+
+type includer struct {
+	pattern string
+}
+
+func newIncluder(pattern string) matcher {
+	return &includer{pattern: pattern}
+}
+
+func (i *includer) match(file string) bool {
+	return matchPathPattern(i.pattern, file, true)
+}
+
+type excluder struct {
+	pattern string
+}
+
+func newExcluder(pattern string) matcher {
+	return &excluder{pattern: pattern}
+}
+
+func (e *excluder) match(file string) bool {
+	return matchPathPattern(e.pattern, file, false)
 }
 
 func newFilter(include string, exclude string) *filter {
 	return &filter{
-		include: include,
-		exclude: exclude,
+		incl: newIncluder(include),
+		excl: newExcluder(exclude),
 	}
 }
 
 func (f *filter) filterFile(file string) bool {
-	isInclude := matchPathPattern(f.include, file, true)
-	isExclude := matchPathPattern(f.exclude, file, false)
-
-	return !isInclude || isExclude
+	return !f.incl.match(file) || f.excl.match(file)
 }
 
 // Returns resultIfError in case of empty pattern or pattern parsing error
