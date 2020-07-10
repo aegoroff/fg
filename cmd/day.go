@@ -7,11 +7,7 @@ import (
 )
 
 func newDay() *cobra.Command {
-	return newCmd("day", "d", "Group files by day", dayFunc)
-}
-
-func dayFunc(_ *cobra.Command, _ []string) error {
-	return group(appFileSystem, dayGrouper)
+	return newSimpleGroupingCmd("day", "d", "Group files by day", dayGrouper)
 }
 
 func dayGrouper(file os.FileInfo) []string {

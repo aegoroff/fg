@@ -7,11 +7,7 @@ import (
 )
 
 func newYear() *cobra.Command {
-	return newCmd("year", "y", "Group files by year", yearFunc)
-}
-
-func yearFunc(_ *cobra.Command, _ []string) error {
-	return group(appFileSystem, yearGrouper)
+	return newSimpleGroupingCmd("year", "y", "Group files by year", yearGrouper)
 }
 
 func yearGrouper(file os.FileInfo) []string {

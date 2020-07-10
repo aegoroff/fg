@@ -7,11 +7,7 @@ import (
 )
 
 func newMonth() *cobra.Command {
-	return newCmd("month", "m", "Group files by month", monthFunc)
-}
-
-func monthFunc(_ *cobra.Command, _ []string) error {
-	return group(appFileSystem, monthGrouper)
+	return newSimpleGroupingCmd("month", "m", "Group files by month", monthGrouper)
 }
 
 func monthGrouper(file os.FileInfo) []string {
