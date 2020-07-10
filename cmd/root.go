@@ -4,9 +4,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"io"
-	"log"
 	"os"
-	"path/filepath"
 )
 
 // Grouping function
@@ -62,83 +60,4 @@ func Execute(args ...string) error {
 	}
 
 	return nil
-}
-
-func group(fs afero.Fs, grouper Grouping) error {
-	f, err := fs.Open(basePath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	files, err := f.Readdir(-1)
-	if err != nil {
-		return err
-	}
-
-	for _, file := range files {
-		// skip directories
-		if file.IsDir() {
-			continue
-		}
-
-		// skip files if necessary
-		if filterFile(file.Name(), include, exclude) {
-			continue
-		}
-
-		// Only files grouped
-		groupFile(file, basePath, fs, grouper)
-	}
-	return nil
-}
-
-func filterFile(file string, include string, exclude string) bool {
-	isInclude := matchPathPattern(include, file, true)
-	isExclude := matchPathPattern(exclude, file, false)
-
-	return !isInclude || isExclude
-}
-
-func groupFile(file os.FileInfo, baseDirPath string, fs afero.Fs, grouper Grouping) {
-	// Group key will be subdirectory (of base dir) name
-	subdirs := grouper(file)
-
-	parts := []string{baseDirPath}
-	parts = append(parts, subdirs...)
-
-	targetDirPath := filepath.Join(parts...)
-
-	// Directory may not exist
-	if _, err := fs.Stat(targetDirPath); os.IsNotExist(err) {
-		if err := fs.Mkdir(targetDirPath, os.ModeDir); err != nil {
-			log.Printf("%v", err)
-			return
-		}
-	}
-
-	oldFilePath := filepath.Join(baseDirPath, file.Name())
-	newFilePath := filepath.Join(targetDirPath, file.Name())
-
-	rename(fs, oldFilePath, newFilePath)
-}
-
-func rename(fs afero.Fs, oldFilePath string, newFilePath string) {
-	if err := fs.Rename(oldFilePath, newFilePath); err != nil {
-		log.Printf("%v", err)
-	} else {
-		log.Printf("File %s moved to %s", oldFilePath, newFilePath)
-	}
-}
-
-// Returns resultIfError in case of empty pattern or pattern parsing error
-func matchPathPattern(pattern string, file string, resultIfError bool) bool {
-	result, err := filepath.Match(pattern, file)
-	if err != nil {
-		log.Printf("%v", err)
-		result = resultIfError
-	} else if len(pattern) == 0 {
-		result = resultIfError
-	}
-	return result
 }

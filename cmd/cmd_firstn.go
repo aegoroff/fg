@@ -24,7 +24,10 @@ func firstnFunc(cmd *cobra.Command, _ []string) error {
 		return errors.New("number must be positive")
 	}
 
-	return group(appFileSystem, func(info os.FileInfo) []string {
+	flt := newFilter(include, exclude)
+	g := newGrouper(appFileSystem, basePath, flt)
+
+	return g.group(func(info os.FileInfo) []string {
 		return firstGrouper(num, info)
 	})
 }

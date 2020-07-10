@@ -61,6 +61,9 @@ func ungroup(fs afero.Fs, isClean bool) error {
 
 	filech := make(chan *fileItem, 16)
 
+	flt := newFilter(include, exclude)
+	g := newGrouper(fs, basePath, flt)
+
 	// enumerate files in all subdirs
 	go func() {
 		defer close(filech)
@@ -83,7 +86,7 @@ func ungroup(fs afero.Fs, isClean bool) error {
 				}
 
 				// skip files if necessary
-				if filterFile(file.Name(), include, exclude) {
+				if flt.filterFile(file.Name()) {
 					continue
 				}
 
@@ -106,7 +109,7 @@ func ungroup(fs afero.Fs, isClean bool) error {
 		if uniquePaths.Contains(newFilePath) {
 			newFilePath = createNewPath(oldFilePath)
 		}
-		rename(fs, oldFilePath, newFilePath)
+		g.rename(oldFilePath, newFilePath)
 		uniquePaths.Add(newFilePath)
 	}
 
