@@ -9,7 +9,8 @@ import (
 const numberParamName = "number"
 
 func newFirstn(c conf) *cobra.Command {
-	cmd := newCmd("firstn", "fn", "Group files by first N letters of a name. By default 3", func(cmd *cobra.Command, _ []string) error {
+	short := "Group files by first N letters of a name. By default 3"
+	cmd := newCmd("firstn", "fn", short, func(cmd *cobra.Command, _ []string) error {
 		num, err := cmd.Flags().GetInt(numberParamName)
 		if err != nil {
 			return err
