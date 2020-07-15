@@ -31,7 +31,7 @@ func newGrouper(fs afero.Fs, basePath string, grouping grouping) *grouper {
 	}
 }
 
-func (g *grouper) group(flt *filter) error {
+func (g *grouper) group(flt Filter) error {
 	f, err := g.fs.Open(g.basePath)
 	if err != nil {
 		return err
@@ -50,7 +50,7 @@ func (g *grouper) group(flt *filter) error {
 		}
 
 		// skip files if necessary
-		if flt.skip(file.Name()) {
+		if flt.Skip(file.Name()) {
 			continue
 		}
 

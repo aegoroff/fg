@@ -37,7 +37,7 @@ func newCmd(use string, alias string, short string, f cmdFunc) *cobra.Command {
 
 func newSimpleGroupingCmd(c conf, s simpler) *cobra.Command {
 	return newCmd(s.name(), s.alias(), s.short(), func(_ *cobra.Command, _ []string) error {
-		flt := newFilter(c.include(), c.exclude())
+		flt := NewFilter(c.include(), c.exclude())
 		grp := newGrouper(c.fs(), c.root(), s.grouper())
 
 		return grp.group(flt)

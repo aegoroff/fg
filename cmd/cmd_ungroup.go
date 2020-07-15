@@ -60,7 +60,7 @@ func ungroup(c conf, isClean bool) error {
 
 	filech := make(chan *fileItem, 16)
 
-	flt := newFilter(c.include(), c.exclude())
+	flt := NewFilter(c.include(), c.exclude())
 
 	// enumerate files in all subdirs
 	go func() {
@@ -84,7 +84,7 @@ func ungroup(c conf, isClean bool) error {
 				}
 
 				// skip files if necessary
-				if flt.skip(file.Name()) {
+				if flt.Skip(file.Name()) {
 					continue
 				}
 

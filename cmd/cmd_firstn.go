@@ -19,7 +19,7 @@ func newFirstn(c conf) *cobra.Command {
 			return errors.New("number must be positive")
 		}
 
-		flt := newFilter(c.include(), c.exclude())
+		flt := NewFilter(c.include(), c.exclude())
 		g := newGrouper(c.fs(), c.root(), func(info os.FileInfo) []string {
 			return firstGrouper(num, info)
 		})
