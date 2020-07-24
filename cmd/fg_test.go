@@ -161,15 +161,15 @@ func TestFg_GroupingTests_FilesMoved(t *testing.T) {
 		dir := "dir"
 
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(dir, 0755)
-		afero.WriteFile(memfs, dir+test.file1, []byte(content), 0644)
-		afero.WriteFile(memfs, dir+test.file2, []byte(content), 0644)
-		afero.WriteFile(memfs, dir+test.file3, []byte(content), 0644)
-		afero.WriteFile(memfs, dir+test.file4, []byte(content), 0644)
+		_ = memfs.MkdirAll(dir, 0755)
+		_ = afero.WriteFile(memfs, dir+test.file1, []byte(content), 0644)
+		_ = afero.WriteFile(memfs, dir+test.file2, []byte(content), 0644)
+		_ = afero.WriteFile(memfs, dir+test.file3, []byte(content), 0644)
+		_ = afero.WriteFile(memfs, dir+test.file4, []byte(content), 0644)
 		appFileSystem = memfs
 
 		// Act
-		Execute(test.option, "-p", dir, "-i", "")
+		_ = Execute(test.option, "-p", dir, "-i", "")
 
 		// Assert
 		_, err := memfs.Stat(dir + test.sub1 + test.file1)
@@ -217,14 +217,14 @@ func TestFg_UngroupingTests_FilesMoved(t *testing.T) {
 		dir := "dir"
 
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(dir, 0755)
-		afero.WriteFile(memfs, dir+test.sub1+test.file1, []byte(content), 0644)
-		afero.WriteFile(memfs, dir+test.sub2+test.file2, []byte(content), 0644)
-		afero.WriteFile(memfs, dir+test.sub3+test.file3, []byte(content), 0644)
+		_ = memfs.MkdirAll(dir, 0755)
+		_ = afero.WriteFile(memfs, dir+test.sub1+test.file1, []byte(content), 0644)
+		_ = afero.WriteFile(memfs, dir+test.sub2+test.file2, []byte(content), 0644)
+		_ = afero.WriteFile(memfs, dir+test.sub3+test.file3, []byte(content), 0644)
 		appFileSystem = memfs
 
 		// Act
-		Execute(test.option, "-p", dir, "-i", "")
+		_ = Execute(test.option, "-p", dir, "-i", "")
 
 		// Assert
 		_, err := memfs.Stat(dir + test.sub1 + test.file1)
@@ -272,13 +272,13 @@ func TestFg_UngroupingTestAndClean_FilesMovedOldDirsRemoved(t *testing.T) {
 		dir := "dir"
 
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(dir, 0755)
-		afero.WriteFile(memfs, dir+test.sub1+test.file1, []byte(content), 0644)
-		afero.WriteFile(memfs, dir+test.sub2+test.file2, []byte(content), 0644)
+		_ = memfs.MkdirAll(dir, 0755)
+		_ = afero.WriteFile(memfs, dir+test.sub1+test.file1, []byte(content), 0644)
+		_ = afero.WriteFile(memfs, dir+test.sub2+test.file2, []byte(content), 0644)
 		appFileSystem = memfs
 
 		// Act
-		Execute("u", "-p", dir, "-c", "-i", "")
+		_ = Execute("u", "-p", dir, "-c", "-i", "")
 
 		// Assert
 		_, err := memfs.Stat(dir + test.sub1 + test.file1)
@@ -320,13 +320,13 @@ func TestFg_UngroupingTestWithFiltering_CountMovedFilesAsSpecified(t *testing.T)
 
 		sub := "/sub"
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(dir, 0755)
-		afero.WriteFile(memfs, dir+sub+test.file1, []byte(content), 0644)
-		afero.WriteFile(memfs, dir+sub+test.file2, []byte(content), 0644)
+		_ = memfs.MkdirAll(dir, 0755)
+		_ = afero.WriteFile(memfs, dir+sub+test.file1, []byte(content), 0644)
+		_ = afero.WriteFile(memfs, dir+sub+test.file2, []byte(content), 0644)
 		appFileSystem = memfs
 
 		// Act
-		Execute("u", "-p", dir, "-i", test.include)
+		_ = Execute("u", "-p", dir, "-i", test.include)
 
 		// Assert
 		files := getFileNamesInDir(memfs, dir)
@@ -353,13 +353,13 @@ func TestFg_UngroupingTestWithFilteringAndCleaning_CountMovedFilesAsSpecifiedNot
 
 		sub := "/sub"
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(dir, 0755)
-		afero.WriteFile(memfs, dir+sub+test.file1, []byte(content), 0644)
-		afero.WriteFile(memfs, dir+sub+test.file2, []byte(content), 0644)
+		_ = memfs.MkdirAll(dir, 0755)
+		_ = afero.WriteFile(memfs, dir+sub+test.file1, []byte(content), 0644)
+		_ = afero.WriteFile(memfs, dir+sub+test.file2, []byte(content), 0644)
 		appFileSystem = memfs
 
 		// Act
-		Execute("u", "-p", dir, "-i", test.include, "-c")
+		_ = Execute("u", "-p", dir, "-i", test.include, "-c")
 
 		// Assert
 		files := getFileNamesInDir(memfs, dir)
@@ -380,14 +380,14 @@ func TestFg_UngroupingTestReadOnlyTarget_CountMovedFilesAsSpecified(t *testing.T
 	file2 := "/f1.xml"
 
 	memfs := afero.NewMemMapFs()
-	memfs.MkdirAll(dir, 0755)
-	afero.WriteFile(memfs, dir+sub+file1, []byte(content), 0644)
-	afero.WriteFile(memfs, dir+sub+file2, []byte(content), 0644)
+	_ = memfs.MkdirAll(dir, 0755)
+	_ = afero.WriteFile(memfs, dir+sub+file1, []byte(content), 0644)
+	_ = afero.WriteFile(memfs, dir+sub+file2, []byte(content), 0644)
 
 	appFileSystem = afero.NewReadOnlyFs(memfs)
 
 	// Act
-	Execute("u", "-p", dir, "-c", "-i", "")
+	_ = Execute("u", "-p", dir, "-c", "-i", "")
 
 	// Assert
 	files := getFileNamesInDir(memfs, dir)
@@ -408,15 +408,15 @@ func TestFg_UngroupingTestSubdirWithoutFiles_CountMovedFilesAsSpecifiedSubdirWit
 	file2 := "/f3.xml"
 
 	memfs := afero.NewMemMapFs()
-	memfs.MkdirAll(dir, 0755)
-	memfs.MkdirAll(dir+sub1, 0755)
-	afero.WriteFile(memfs, dir+sub+file1, []byte(content), 0644)
-	afero.WriteFile(memfs, dir+sub+file2, []byte(content), 0644)
+	_ = memfs.MkdirAll(dir, 0755)
+	_ = memfs.MkdirAll(dir+sub1, 0755)
+	_ = afero.WriteFile(memfs, dir+sub+file1, []byte(content), 0644)
+	_ = afero.WriteFile(memfs, dir+sub+file2, []byte(content), 0644)
 
 	appFileSystem = memfs
 
 	// Act
-	Execute("u", "-p", dir, "-c", "-i", "")
+	_ = Execute("u", "-p", dir, "-c", "-i", "")
 
 	// Assert
 	files := getFileNamesInDir(memfs, dir)
@@ -439,14 +439,14 @@ func TestFg_GroupingTestReadOnlyTarget_CountNotMovedFilesAsSpecified(t *testing.
 	file2 := "/f2.txt"
 
 	memfs := afero.NewMemMapFs()
-	memfs.MkdirAll(dir, 0755)
-	afero.WriteFile(memfs, dir+file1, []byte(content), 0644)
-	afero.WriteFile(memfs, dir+file2, []byte(content), 0644)
+	_ = memfs.MkdirAll(dir, 0755)
+	_ = afero.WriteFile(memfs, dir+file1, []byte(content), 0644)
+	_ = afero.WriteFile(memfs, dir+file2, []byte(content), 0644)
 
 	appFileSystem = afero.NewReadOnlyFs(memfs)
 
 	// Act
-	Execute("e", "-p", dir, "-i", "")
+	_ = Execute("e", "-p", dir, "-i", "")
 
 	// Assert
 	files := getFileNamesInDir(memfs, dir)
@@ -465,14 +465,14 @@ func TestFg_GroupingTestFirstNFileNameShort_CountMovedFilesAsSpecifiedTargetPath
 	file2 := "/f2.txt"
 
 	memfs := afero.NewMemMapFs()
-	memfs.MkdirAll(dir, 0755)
-	afero.WriteFile(memfs, dir+file1, []byte(content), 0644)
-	afero.WriteFile(memfs, dir+file2, []byte(content), 0644)
+	_ = memfs.MkdirAll(dir, 0755)
+	_ = afero.WriteFile(memfs, dir+file1, []byte(content), 0644)
+	_ = afero.WriteFile(memfs, dir+file2, []byte(content), 0644)
 
 	appFileSystem = memfs
 
 	// Act
-	Execute("fn", "-p", dir, "-i", "", "-n", "5")
+	_ = Execute("fn", "-p", dir, "-i", "", "-n", "5")
 
 	// Assert
 	files := getFileNamesInDir(memfs, dir)
@@ -502,14 +502,14 @@ func TestFg_GroupingTestFirstNFileInvalidNum_FilesNotMoved(t *testing.T) {
 		file2 := "/f2.txt"
 
 		memfs := afero.NewMemMapFs()
-		memfs.MkdirAll(dir, 0755)
-		afero.WriteFile(memfs, dir+file1, []byte(content), 0644)
-		afero.WriteFile(memfs, dir+file2, []byte(content), 0644)
+		_ = memfs.MkdirAll(dir, 0755)
+		_ = afero.WriteFile(memfs, dir+file1, []byte(content), 0644)
+		_ = afero.WriteFile(memfs, dir+file2, []byte(content), 0644)
 
 		appFileSystem = memfs
 
 		// Act
-		Execute("fn", "-p", dir, "-i", "", "-n", test.num)
+		_ = Execute("fn", "-p", dir, "-i", "", "-n", test.num)
 
 		// Assert
 		files := getFileNamesInDir(memfs, dir)
