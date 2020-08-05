@@ -36,7 +36,7 @@ func (g *grouper) group(flt Filter) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer Close(f)
 
 	files, err := f.Readdir(-1)
 	if err != nil {

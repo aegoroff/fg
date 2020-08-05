@@ -40,7 +40,7 @@ func ungroup(c conf, isClean bool) error {
 
 	items, err := base.Readdir(-1)
 	if err != nil {
-		base.Close()
+		Close(base)
 		return err
 	}
 
@@ -50,7 +50,7 @@ func ungroup(c conf, isClean bool) error {
 	go func() {
 		defer close(subch)
 		// Close base path after reading all subdirs
-		defer base.Close()
+		defer Close(base)
 		for _, item := range items {
 			if item.IsDir() {
 				subch <- filepath.Join(c.root(), item.Name())
@@ -73,7 +73,7 @@ func ungroup(c conf, isClean bool) error {
 
 			items, err := s.Readdir(-1)
 			if err != nil {
-				s.Close()
+				Close(s)
 				continue
 			}
 
@@ -90,7 +90,7 @@ func ungroup(c conf, isClean bool) error {
 
 				filech <- &fileItem{path: sub, name: file.Name()}
 			}
-			s.Close()
+			Close(s)
 		}
 	}()
 
@@ -148,7 +148,7 @@ func isDirEmpty(fs afero.Fs, path string) bool {
 		return false
 	}
 
-	defer base.Close()
+	defer Close(base)
 	items, err := base.Readdir(-1)
 	if err != nil {
 		return false

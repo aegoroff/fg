@@ -519,7 +519,7 @@ func TestFg_GroupingTestFirstNFileInvalidNum_FilesNotMoved(t *testing.T) {
 
 func getFileNamesInDir(fs afero.Fs, path string) []string {
 	base, _ := fs.Open(path)
-	defer base.Close()
+	defer Close(base)
 	items, _ := base.Readdir(-1)
 	var files []string
 	for _, file := range items {
