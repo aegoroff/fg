@@ -67,6 +67,32 @@ func TestFilterFile_BothPatternsEmpty_ReturnFalse(t *testing.T) {
 	ass.Falsef(result, "File name %s should not filtered because patterns not set but it was", fgTestFileName)
 }
 
+func TestFilterFile_InvalidExcludeSet_ReturnFalse(t *testing.T) {
+	// Arrange
+	ass := assert.New(t)
+	var include string
+	f := NewFilter(include, "[")
+
+	// Act
+	result := f.Skip(fgTestFileName)
+
+	// Assert
+	ass.False(result)
+}
+
+func TestFilterFile_InvalidIncludeSet_ReturnFalse(t *testing.T) {
+	// Arrange
+	ass := assert.New(t)
+	var exclude string
+	f := NewFilter("[", exclude)
+
+	// Act
+	result := f.Skip(fgTestFileName)
+
+	// Assert
+	ass.False(result)
+}
+
 func TestFilterFile_BothPatternsSetMatchOnlyInclude_ReturnFalse(t *testing.T) {
 	// Arrange
 	ass := assert.New(t)
