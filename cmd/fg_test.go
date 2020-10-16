@@ -396,6 +396,25 @@ func TestFg_UngroupingTestWithFilteringAndCleaning_CountMovedFilesAsSpecifiedNot
 	}
 }
 
+func TestFg_UngroupingEmtyDirWithCleaning_DirNotDeleted(t *testing.T) {
+	// Arrange
+	ass := assert.New(t)
+	const content = "src"
+	dir := "dir"
+
+	sub := "/sub"
+	memfs := afero.NewMemMapFs()
+	_ = memfs.MkdirAll(dir+sub, 0755)
+	appFileSystem = memfs
+
+	// Act
+	_ = Execute("u", "-p", dir, "-c")
+
+	// Assert
+	_, err := memfs.Stat(dir + sub)
+	ass.NoError(err)
+}
+
 func TestFg_UngroupingTestReadOnlyTarget_CountMovedFilesAsSpecified(t *testing.T) {
 	// Arrange
 	ass := assert.New(t)
