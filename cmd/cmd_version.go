@@ -7,7 +7,7 @@ import (
 )
 
 // Version defines program version
-var Version = "0.1.0"
+var Version = "0.2.0"
 
 func newVersion() *cobra.Command {
 	cmd := newCmd("version", "ver", "Print the version number of fg", versionFunc)
