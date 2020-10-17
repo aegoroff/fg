@@ -1,5 +1,5 @@
 ﻿# version format
-version: 0.2.0.{build}
+version: 0.2.1.{build}
 
 clone_folder: c:\gopath\src\fg
 
@@ -29,7 +29,7 @@ stack: go ^1.15
 image: Visual Studio 2019
 
 build_script:
-  - gox -osarch="linux/amd64 linux/arm linux/arm64 linux/386 darwin/amd64 windows/amd64 windows/386" -ldflags "-X fg/cmd.Version=%APPVEYOR_BUILD_VERSION%" fg
+  - gox -osarch="linux/amd64 linux/arm linux/arm64 linux/386 darwin/amd64 windows/amd64 windows/386" -ldflags "-X fg/cmd.Version=%APPVEYOR_BUILD_VERSION%" fgr
 
 test_script:
   - go test -coverprofile=coverage.txt -covermode=atomic fg/...
@@ -40,17 +40,17 @@ after_test:
       ./codecov.sh -f "coverage.txt" -t $env:CODECOV_TOKEN
 
 artifacts:
-  - path: fg_windows_amd64.exe
+  - path: fgr_windows_amd64.exe
     name: binary
-  - path: fg_windows_386.exe
+  - path: fgr_windows_386.exe
     name: binary
-  - path: fg_linux_amd64
+  - path: fgr_linux_amd64
     name: binary
-  - path: fg_linux_386
+  - path: fgr_linux_386
     name: binary
-  - path: fg_linux_arm
+  - path: fgr_linux_arm
     name: binary
-  - path: fg_linux_arm64
+  - path: fgr_linux_arm64
     name: binary
-  - path: fg_darwin_amd64
+  - path: fgr_darwin_amd64
     name: binary
