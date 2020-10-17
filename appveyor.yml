@@ -40,17 +40,17 @@ after_test:
       ./codecov.sh -f "coverage.txt" -t $env:CODECOV_TOKEN
 
 artifacts:
-  - path: fgr_windows_amd64.exe
+  - path: fg_windows_amd64.exe
     name: binary
-  - path: fgr_windows_386.exe
+  - path: fg_windows_386.exe
     name: binary
-  - path: fgr_linux_amd64
+  - path: fg_linux_amd64
     name: binary
-  - path: fgr_linux_386
+  - path: fg_linux_386
     name: binary
-  - path: fgr_linux_arm
+  - path: fg_linux_arm
     name: binary
-  - path: fgr_linux_arm64
+  - path: fg_linux_arm64
     name: binary
-  - path: fgr_darwin_amd64
+  - path: fg_darwin_amd64
     name: binary
