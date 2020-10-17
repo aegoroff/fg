@@ -26,6 +26,6 @@ func Test_Version(t *testing.T) {
 		_ = Execute(test.cmd)
 
 		// Assert
-		ass.Equal(fmt.Sprintf("fg v%s\n", Version), buf.String())
+		ass.Equal(fmt.Sprintf("fgr v%s\n", Version), buf.String())
 	}
 }
