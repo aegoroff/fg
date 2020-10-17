@@ -10,8 +10,8 @@ import (
 var Version = "0.2.0"
 
 func newVersion() *cobra.Command {
-	cmd := newCmd("version", "ver", "Print the version number of fg", versionFunc)
-	cmd.Long = `All software has versions. This is fg's`
+	cmd := newCmd("version", "ver", "Print the version number of fgr", versionFunc)
+	cmd.Long = `All software has versions. This is fgr's`
 
 	return cmd
 }
