@@ -29,7 +29,7 @@ stack: go ^1.15
 image: Visual Studio 2019
 
 build_script:
-  - gox -osarch="linux/amd64 linux/arm linux/arm64 linux/386 darwin/amd64 windows/amd64 windows/386" -ldflags "-X fg/cmd.Version=%APPVEYOR_BUILD_VERSION%" fg
+  - gox -osarch="linux/amd64 linux/arm linux/arm64 linux/386 darwin/amd64 windows/amd64 windows/386" -parallel=4 -ldflags "-X fg/cmd.Version=%APPVEYOR_BUILD_VERSION%" fg
 
 test_script:
   - go test -coverprofile=coverage.txt -covermode=atomic fg/...
