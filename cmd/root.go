@@ -12,9 +12,9 @@ var appWriter io.Writer
 
 func newRoot() *cobra.Command {
 	return &cobra.Command{
-		Use:   "fg",
+		Use:   "fgr",
 		Short: "Grouping files tool",
-		Long: ` fg is a small commandline app that allows you to easily group
+		Long: ` fgr is a small commandline app that allows you to easily group
  all files in the dir specified into several child subdirectories.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return cmd.Help()
