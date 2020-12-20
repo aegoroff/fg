@@ -2,13 +2,6 @@ package cmd
 
 import "github.com/spf13/cobra"
 
-type simpler interface {
-	name() string
-	alias() string
-	short() string
-	grouper() grouping
-}
-
 type simple struct {
 	use   string
 	a     string
@@ -35,7 +28,7 @@ func newCmd(use string, alias string, short string, f cmdFunc) *cobra.Command {
 	}
 }
 
-func newSimpleGroupingCmd(c conf, s simpler) *cobra.Command {
+func newSimpleGroupingCmd(c conf, s *simple) *cobra.Command {
 	return newCmd(s.name(), s.alias(), s.short(), func(_ *cobra.Command, _ []string) error {
 		flt := NewFilter(c.include(), c.exclude())
 		grp := newGrouper(c.fs(), c.root(), s.grouper())
