@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/aegoroff/godatastruct/collections"
+	c9s "github.com/aegoroff/godatastruct/collections"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"log"
@@ -94,8 +94,8 @@ func ungroup(c conf, isClean bool) error {
 		}
 	}()
 
-	uniquePaths := make(collections.StringHashSet)
-	oldSubDirs := make(collections.StringHashSet)
+	uniquePaths := make(c9s.StringHashSet)
+	oldSubDirs := make(c9s.StringHashSet)
 
 	r := newRenamer(c.fs())
 	// rename files
