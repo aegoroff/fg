@@ -17,6 +17,6 @@ func newVersion() *cobra.Command {
 }
 
 func versionFunc(_ *cobra.Command, _ []string) error {
-	_, err := fmt.Fprintf(appWriter, "fgr v%s\n", Version)
+	_, err := fmt.Fprintf(appWriter, "%s\n", Version)
 	return err
 }

@@ -58,8 +58,11 @@ brews:
     commit_author:
       name: "Alexander Egorov"
       email: "egoroff@gmail.com"
+    test: |
+        assert_match version.to_s, shell_output("#{bin}/fgr ver")
     homepage: "https://github.com/aegoroff/fg"
-    description: "A small commandline app written in Go that allows you to easily group all files in the dir specified into several child directories."
+    description: "Small console app written in Go that allows you to easily group all files in the dir specified"
+    license: "Apache-2.0"
 
 signs:
   - artifacts: checksum
