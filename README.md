@@ -24,3 +24,15 @@ Update fg if already installed:
 ```sh
 brew upgrade fg
 ```
+
+**scoop**:
+
+```sh
+scoop bucket add aegoroff https://github.com/aegoroff/scoop-bucket.git
+scoop install fg
+```
+
+**manually**:
+
+Download the pre-compiled binaries from the [releases](https://github.com/aegoroff/fg/releases) and
+copy to the desired location.

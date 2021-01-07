@@ -64,6 +64,14 @@ brews:
     description: "Small console app written in Go that allows you to easily group all files in the dir specified"
     license: "Apache-2.0"
 
+scoop:
+  bucket:
+    owner: aegoroff
+    name: scoop-bucket
+  homepage:  https://github.com/aegoroff/fg
+  description: Small console app written in Go that allows you to easily group all files in the dir specified into several child directories.
+  license: Apache-2.0
+
 signs:
   - artifacts: checksum
 
