@@ -94,8 +94,8 @@ func ungroup(c conf, isClean bool) error {
 		}
 	}()
 
-	uniquePaths := make(c9s.StringHashSet)
-	oldSubDirs := make(c9s.StringHashSet)
+	uniquePaths := c9s.NewStringHashSet()
+	oldSubDirs := c9s.NewStringHashSet()
 
 	r := newRenamer(c.fs())
 	// rename files
