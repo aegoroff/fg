@@ -1,6 +1,6 @@
 module fg
 
-go 1.14
+go 1.16
 
 require (
 	github.com/aegoroff/godatastruct v1.2.0
