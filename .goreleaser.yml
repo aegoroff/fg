@@ -12,7 +12,6 @@ builds:
       - freebsd
       - windows
       - openbsd
-      - solaris
       - netbsd
       - darwin
     goarch:
@@ -38,15 +37,25 @@ builds:
       - freebsd
     goarch:
       - arm
-      - arm64
     goarm:
       - 7
+
+  - id: "arm64"
+    binary: fgr
+    ldflags: -s -w -X fg/cmd.Version={{ .Version }}
+    goos:
+      - linux
+      - freebsd
+      - darwin
+    goarch:
+      - arm64
 
 archives:
   - id: default
     builds:
       - x64
       - arm
+      - arm64
       - 386
 
 brews:
