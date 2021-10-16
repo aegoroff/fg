@@ -1,6 +1,6 @@
 fg
 ==
-[![Build status](https://ci.appveyor.com/api/projects/status/y44h5uxii7ns0qnr/branch/master?svg=true)](https://ci.appveyor.com/project/aegoroff/fg/branch/master) [![codecov](https://codecov.io/gh/aegoroff/fg/branch/master/graph/badge.svg)](https://codecov.io/gh/aegoroff/fg) [![Go Report Card](https://goreportcard.com/badge/github.com/aegoroff/fg)](https://goreportcard.com/report/github.com/aegoroff/fg)
+[![CI](https://github.com/aegoroff/fg/actions/workflows/ci.yml/badge.svg)](https://github.com/aegoroff/fg/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/aegoroff/fg/branch/master/graph/badge.svg)](https://codecov.io/gh/aegoroff/fg) [![Go Report Card](https://goreportcard.com/badge/github.com/aegoroff/fg)](https://goreportcard.com/report/github.com/aegoroff/fg)
 
 A small commandline app written in Go that allows you to easily group
 all files in the dir specified into several child subdirectories.
