@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/aegoroff/godatastruct v1.2.1
 	github.com/spf13/afero v1.8.2
-	github.com/spf13/cobra v1.3.0
+	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.7.0
 )
 
