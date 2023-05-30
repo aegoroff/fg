@@ -6,7 +6,7 @@ require (
 	github.com/aegoroff/godatastruct v1.3.0
 	github.com/spf13/afero v1.9.5
 	github.com/spf13/cobra v1.7.0
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 )
 
 require (
